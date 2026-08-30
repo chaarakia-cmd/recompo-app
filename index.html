@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Recompo App</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Recompo App - Annuel</title>
   <style>
     :root {
       --bg: #09090b;
@@ -25,14 +24,15 @@
       padding: 16px 20px; background: #000; border-bottom: 1px solid var(--card-border);
       position: sticky; top: 0; z-index: 100;
     }
-    .header h1 { font-size: 1.2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+    .header h1 { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
     .menu-btn { background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
 
     /* Drawer Menu */
     .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; z-index: 200; }
-    .menu-drawer { position: fixed; top: 0; right: -80%; width: 80%; height: 100%; background: var(--card); border-left: 1px solid var(--card-border); transition: 0.3s ease; z-index: 201; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+    .menu-drawer { position: fixed; top: 0; right: -85%; width: 85%; height: 100%; background: var(--card); border-left: 1px solid var(--card-border); transition: 0.3s ease; z-index: 201; padding: 20px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
     .menu-drawer.active { right: 0; }
-    .menu-drawer button { background: var(--input-bg); border: none; color: var(--text); padding: 14px; text-align: left; font-size: 1rem; font-weight: 600; border-radius: 8px; }
+    .menu-drawer button { background: var(--input-bg); border: none; color: var(--text); padding: 12px 14px; text-align: left; font-size: 0.9rem; font-weight: 600; border-radius: 8px; cursor: pointer; }
+    .menu-drawer h3 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-top: 10px; letter-spacing: 0.5px; }
 
     /* Container main */
     .container { padding: 16px; max-width: 500px; margin: 0 auto; }
@@ -40,33 +40,46 @@
     /* Day Counter Header */
     .day-banner {
       background: linear-gradient(135deg, #e11d48, #9f1239);
-      border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+      border-radius: 12px; padding: 16px; margin-bottom: 16px;
     }
-    .day-banner h2 { font-size: 1.5rem; font-weight: 900; }
-    .day-banner span { font-size: 0.85rem; opacity: 0.9; }
+    .day-banner h2 { font-size: 1.3rem; font-weight: 900; }
+    .day-banner p { font-size: 0.85rem; opacity: 0.9; font-weight: 600; }
+    .day-banner .progress-txt { font-size: 0.75rem; text-transform: uppercase; margin-top: 4px; opacity: 0.8; }
 
     /* Exercise Card Focus */
     .ex-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
-    .ex-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
+    .ex-title { font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .ex-target { font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
 
-    .img-box { width: 100%; height: 200px; background: var(--input-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; overflow: hidden; border: 1px dashed #444; }
+    /* Bulle Séance Précédente */
+    .history-badge {
+      background: #1e293b; border: 1px solid #334155; border-radius: 8px;
+      padding: 8px 12px; margin-bottom: 14px; font-size: 0.8rem; color: #94a3b8;
+    }
+    .history-badge strong { color: #f1f5f9; }
+
+    .img-box { width: 100%; height: 170px; background: var(--input-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden; border: 1px dashed #444; }
     .img-box img { width: 100%; height: 100%; object-fit: cover; }
-    .upload-btn { background: #3f3f46; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; margin-bottom: 12px; }
+    .upload-btn { background: #3f3f46; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; margin-bottom: 14px; width: 100%; }
 
     /* Sets Table Dynamic */
-    .sets-header { display: grid; grid-template-columns: 40px 1fr 1fr; gap: 8px; text-align: center; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
-    .set-row { display: grid; grid-template-columns: 40px 1fr 1fr; gap: 8px; align-items: center; margin-bottom: 8px; }
-    .set-num { font-weight: bold; color: var(--accent); text-align: center; }
-    .set-row input { background: var(--input-bg); border: 1px solid var(--card-border); color: #fff; padding: 10px; text-align: center; border-radius: 8px; font-size: 1rem; font-weight: 600; width: 100%; }
+    .sets-header { display: grid; grid-template-columns: 35px 1fr 1fr; gap: 8px; text-align: center; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+    .set-row { display: grid; grid-template-columns: 35px 1fr 1fr; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .set-num { font-weight: bold; color: var(--accent); text-align: center; font-size: 0.9rem; }
+    .set-row input { background: var(--input-bg); border: 1px solid var(--card-border); color: #fff; padding: 10px; text-align: center; border-radius: 8px; font-size: 0.95rem; font-weight: 600; width: 100%; }
 
     /* Navigation Buttons */
     .nav-actions { display: flex; gap: 10px; margin-top: 10px; }
-    .btn-action { flex: 1; background: var(--accent); color: #fff; border: none; padding: 14px; border-radius: 10px; font-size: 0.95rem; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; }
+    .btn-action { flex: 1; background: var(--accent); color: #fff; border: none; padding: 14px; border-radius: 10px; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; }
     .btn-secondary { background: var(--input-bg); margin-top: 8px; }
     .btn-nav-prev { background: #3f3f46; }
 
-    /* Views */
-    .view-modal { display: none; background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--card-border); margin-top: 20px; }
+    /* Views & Modals */
+    .view-modal { display: none; background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--card-border); margin-top: 10px; }
+    .guide-card { background: var(--input-bg); padding: 12px; border-radius: 8px; margin-bottom: 10px; }
+    .guide-card h3 { font-size: 0.9rem; color: var(--accent); margin-bottom: 4px; }
+    .guide-card p, .guide-card li { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+    .guide-card ul { padding-left: 15px; }
   </style>
 </head>
 <body>
@@ -78,11 +91,14 @@
 
   <div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
   <div class="menu-drawer" id="drawer">
-    <h3 style="margin-bottom: 10px;">Menu</h3>
+    <h3>Navigation</h3>
     <button onclick="showView('workout')">🏋️ Séance du jour</button>
-    <button onclick="showView('guidelines')">📋 Consignes & Diète</button>
-    <button onclick="showView('photos')">🖼️ Évolution Photos</button>
-    <button onclick="showView('stats')">📈 Graphiques</button>
+    <button onclick="showView('photos')">🖼️ Photos & Évolution</button>
+    
+    <h3>Contenu du PDF</h3>
+    <button onclick="showView('diet')">🥩 Diète & Repas</button>
+    <button onclick="showView('planning')">📅 Calendrier Scolaire & Deloads</button>
+    <button onclick="showView('rules')">⚠️ Règles & Genou / Gynéco</button>
   </div>
 
   <div class="container">
@@ -90,72 +106,142 @@
     <!-- MAIN WORKOUT VIEW -->
     <div id="workout-view">
       <div class="day-banner">
-        <div>
-          <span id="date-today">Aujourd'hui</span>
-          <h2 id="day-counter">JOUR 1</h2>
-        </div>
-        <span id="progression-tracker">Exo 1 / 4</span>
+        <h2 id="day-counter">SÉANCE 1</h2>
+        <p id="day-name">Jour 1 — Haut du corps (Push)</p>
+        <div class="progress-txt" id="progression-tracker">Exercice 1 / 5</div>
       </div>
 
-      <!-- Single Exercise Mobile Focus -->
       <div id="exercise-container"></div>
 
       <div class="nav-actions">
         <button class="btn-action btn-nav-prev" id="prev-btn" onclick="prevExercise()" style="display:none">⬅ Précédent</button>
-        <button class="btn-action" id="next-btn" onclick="nextExercise()">Suivant ➔</button>
+        <button class="btn-action" id="next-btn" onclick="nextExercise()">Exercice Suivant ➔</button>
       </div>
       <button class="btn-action btn-secondary" onclick="addSet()">+ Ajouter une série</button>
     </div>
 
-    <!-- GUIDELINES VIEW -->
-    <div id="guidelines-view" class="view-modal">
-      <h2>Consignes Quotidiennes</h2>
-      <br>
-      <ul>
-        <li>💧 <b>Eau :</b> 3 Litres par jour minimum.</li>
-        <li>🥩 <b>Protéines :</b> Objectif quotidien fixé.</li>
-        <li>🔥 <b>Calories :</b> Respecter les apports prévus.</li>
-        <li>😴 <b>Sommeil :</b> 8h de récupération.</li>
-      </ul>
+    <!-- DIET VIEW -->
+    <div id="diet-view" class="view-modal">
+      <h2>Alimentation & Cibles</h2><br>
+      <div class="guide-card">
+        <h3>🔥 Calories & Macros Cibles</h3>
+        <p>~2700 kcal/jour (Léger déficit)<br><b>Protéines :</b> ~180g | <b>Glucides :</b> ~310g | <b>Lipides :</b> ~80g</p>
+      </div>
+      <div class="guide-card">
+        <h3>🥪 Organisation Réelle</h3>
+        <p><b>Matin :</b> Rien, eau / café.<br>
+        <b>Midi (Supermarché) :</b> Vise 40g+ prot (poulet/dinde, œufs durs, skyr, jambon).<br>
+        <b>Soir :</b> Repas de famille, prioriser les protéines.<br>
+        <b>Hydratation :</b> 2 à 2.5L d'eau par jour.</p>
+      </div>
       <button class="btn-action btn-secondary" onclick="showView('workout')">Fermer</button>
     </div>
 
-    <!-- PHOTOS EVOLUTION VIEW -->
+    <!-- PLANNING VIEW -->
+    <div id="planning-view" class="view-modal">
+      <h2>Calendrier Scolaire & Périodes</h2><br>
+      <div class="guide-card">
+        <h3>🗓️ Étapes de l'année</h3>
+        <ul>
+          <li><b>Mi-sept → Mi-oct :</b> Adaptation technique, charges modérées (focus genou).</li>
+          <li><b>Mi-oct → Toussaint :</b> Hypertrophie (Vacances = Deload).</li>
+          <li><b>Nov → Noël :</b> Hypertrophie progressive.</li>
+          <li><b>Vacances Noël :</b> Réévaluation photos/poids (ajustement ±150 kcal).</li>
+          <li><b>Janvier → Février :</b> Hypertrophie + volume.</li>
+          <li><b>Février → Printemps :</b> Hypertrophie + volume.</li>
+          <li><b>Avril → Juin :</b> Phase de force (reps basses 4-6).</li>
+          <li><b>Fin Juin :</b> Bilan final avant l'été.</li>
+        </ul>
+      </div>
+      <button class="btn-action btn-secondary" onclick="showView('workout')">Fermer</button>
+    </div>
+
+    <!-- RULES VIEW -->
+    <div id="rules-view" class="view-modal">
+      <h2>Notes & Consignes</h2><br>
+      <div class="guide-card">
+        <h3>🦵 Sensibilité au Genou</h3>
+        <p>On évite le squat profond lourd et les impacts. Remplacé par leg press, hack squat guidé et fentes courtes.</p>
+      </div>
+      <div class="guide-card">
+        <h3>🧬 Gynéco & Repos</h3>
+        <p>Le pec fly renforce le muscle dessous mais ne supprime pas le tissu glandulaire. Repos muscu : 90-120s sur mouvements lourds, 45-60s en isolation.</p>
+      </div>
+      <button class="btn-action btn-secondary" onclick="showView('workout')">Fermer</button>
+    </div>
+
+    <!-- PHOTOS VIEW -->
     <div id="photos-view" class="view-modal">
       <h2>Suivi Physique</h2>
-      <br>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Photos à chaque période de vacances scolaires.</p>
       <input type="file" id="evo-photo-input" accept="image/*" onchange="uploadEvoPhoto(event)" style="display:none">
-      <button class="btn-action" onclick="document.getElementById('evo-photo-input').click()">Ajouter une photo</button>
+      <button class="btn-action" onclick="document.getElementById('evo-photo-input').click()">📷 Ajouter une photo</button>
       <div id="evo-photos-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;"></div>
-      <button class="btn-action btn-secondary" onclick="showView('workout')">Fermer</button>
-    </div>
-
-    <!-- STATS VIEW -->
-    <div id="stats-view" class="view-modal">
-      <h2>Progression</h2>
-      <canvas id="progressChart" style="margin-top:15px;"></canvas>
       <button class="btn-action btn-secondary" onclick="showView('workout')">Fermer</button>
     </div>
 
   </div>
 
   <script>
-    let state = JSON.parse(localStorage.getItem('recompo_state')) || {
-      currentDay: 1,
+    const program = [
+      {
+        dayNum: 1,
+        title: "Jour 1 — Haut du corps (Push)",
+        exercises: [
+          { name: "Développé couché barre", target: "4 séries x 6-8 reps" },
+          { name: "Développé militaire haltères", target: "3 séries x 8-10 reps" },
+          { name: "Dips ou Pec fly", target: "3 séries x 10-12 reps" },
+          { name: "Élévations latérales", target: "3 séries x 12-15 reps" },
+          { name: "Extensions triceps poulie", target: "3 séries x 12-15 reps" }
+        ]
+      },
+      {
+        dayNum: 2,
+        title: "Jour 2 — Bas du corps A (Hanches)",
+        exercises: [
+          { name: "Soulevé de terre roumain", target: "4 séries x 8-10 reps" },
+          { name: "Presse à cuisses", target: "3 séries x 10-12 reps" },
+          { name: "Hip thrust", target: "3 séries x 10-12 reps" },
+          { name: "Leg curl allongé", target: "3 séries x 12-15 reps" },
+          { name: "Mollets debout", target: "4 séries x 15 reps" }
+        ]
+      },
+      {
+        dayNum: 3,
+        title: "Jour 3 — Haut du corps (Pull)",
+        exercises: [
+          { name: "Tractions ou Tirage vertical", target: "4 séries x 6-10 reps" },
+          { name: "Rowing barre ou machine", target: "4 séries x 8-10 reps" },
+          { name: "Tirage horizontal poulie", target: "3 séries x 10-12 reps" },
+          { name: "Curl biceps barre", target: "3 séries x 10-12 reps" },
+          { name: "Face pull", target: "3 séries x 15 reps" }
+        ]
+      },
+      {
+        dayNum: 4,
+        title: "Jour 4 — Bas du corps B (Quads)",
+        exercises: [
+          { name: "Hack squat ou Leg press (bas)", target: "4 séries x 8-10 reps" },
+          { name: "Fentes courtes ou bulgares", target: "3 séries x 10 reps/jambe" },
+          { name: "Extensions quadriceps", target: "3 séries x 12-15 reps" },
+          { name: "Abdos (gainage + obliques)", target: "3-4 séries" }
+        ]
+      }
+    ];
+
+    let state = JSON.parse(localStorage.getItem('recompo_annuel_state')) || {
+      currentDayIndex: 0,
       currentExIndex: 0,
-      exercisesData: {},
+      totalSessionsCount: 1, // Le compteur global qui monte à 1, 8, 89...
+      workoutHistory: {},
+      exerciseImages: {},
       photos: []
     };
 
-    const defaultWorkout = [
-      { name: "Développé Couché", sets: 4 },
-      { name: "Incliné Haltères", sets: 3 },
-      { name: "Écarté Câble", sets: 3 },
-      { name: "Triceps Extension", sets: 4 }
-    ];
+    let currentSetsBuffer = null;
 
     function saveData() {
-      localStorage.setItem('recompo_state', JSON.stringify(state));
+      localStorage.setItem('recompo_annuel_state', JSON.stringify(state));
     }
 
     function toggleMenu() {
@@ -167,45 +253,58 @@
 
     function showView(viewName) {
       if (document.getElementById('drawer').classList.contains('active')) toggleMenu();
-      document.getElementById('workout-view').style.display = viewName === 'workout' ? 'block' : 'none';
-      document.getElementById('guidelines-view').style.display = viewName === 'guidelines' ? 'block' : 'none';
-      document.getElementById('photos-view').style.display = viewName === 'photos' ? 'block' : 'none';
-      document.getElementById('stats-view').style.display = viewName === 'stats' ? 'block' : 'none';
+      ['workout-view', 'diet-view', 'planning-view', 'rules-view', 'photos-view'].forEach(v => {
+        document.getElementById(v).style.display = 'none';
+      });
+      document.getElementById(viewName + '-view').style.display = 'block';
     }
 
     function renderCurrentExercise() {
-      document.getElementById('day-counter').innerText = `JOUR ${state.currentDay}`;
-      document.getElementById('progression-tracker').innerText = `Exo ${state.currentExIndex + 1} / ${defaultWorkout.length}`;
+      const currentDayObj = program[state.currentDayIndex];
+      const ex = currentDayObj.exercises[state.currentExIndex];
 
-      const ex = defaultWorkout[state.currentExIndex];
+      document.getElementById('day-counter').innerText = `SÉANCE ${state.totalSessionsCount}`;
+      document.getElementById('day-name').innerText = currentDayObj.title;
+      document.getElementById('progression-tracker').innerText = `Exercice ${state.currentExIndex + 1} / ${currentDayObj.exercises.length}`;
+
       const container = document.getElementById('exercise-container');
-      const exKey = `day_${state.currentDay}_ex_${state.currentExIndex}`;
-      
-      if (!state.exercisesData[exKey]) {
-        state.exercisesData[exKey] = {
-          img: '',
-          sets: Array(ex.sets).fill(null).map(() => ({ weight: '', reps: '' }))
-        };
+      const exKey = ex.name;
+
+      // Historique séance précédente
+      const lastHistory = state.workoutHistory[exKey] || null;
+      let historyHTML = `<div class="history-badge">💡 <i>Première fois sur cet exercice. Enregistre tes perfs !</i></div>`;
+      if (lastHistory && lastHistory.sets && lastHistory.sets.length > 0) {
+        const perfStr = lastHistory.sets.map((s, idx) => `S${idx+1}: <b>${s.weight || 0}kg</b> × <b>${s.reps || 0}</b>`).join(' | ');
+        historyHTML = `<div class="history-badge">📌 <strong>Dernière séance :</strong> ${perfStr}</div>`;
       }
 
-      const exData = state.exercisesData[exKey];
+      if (!currentSetsBuffer) {
+        // Initialiser 3 ou 4 lignes par défaut selon l'exercice
+        let defaultLen = 4;
+        if (ex.target.includes('3 séries')) defaultLen = 3;
+        currentSetsBuffer = Array(defaultLen).fill(null).map(() => ({ weight: '', reps: '' }));
+      }
 
-      let setsHTML = exData.sets.map((set, i) => `
+      let setsHTML = currentSetsBuffer.map((set, i) => `
         <div class="set-row">
           <div class="set-num">S${i+1}</div>
-          <input type="number" placeholder="Kg" value="${set.weight || ''}" onchange="updateSet(${i}, 'weight', this.value)">
-          <input type="number" placeholder="Reps" value="${set.reps || ''}" onchange="updateSet(${i}, 'reps', this.value)">
+          <input type="number" placeholder="Kg" value="${set.weight || ''}" onchange="updateBuffer(${i}, 'weight', this.value)">
+          <input type="number" placeholder="Reps" value="${set.reps || ''}" onchange="updateBuffer(${i}, 'reps', this.value)">
         </div>
       `).join('');
+
+      const storedImg = state.exerciseImages[exKey] || '';
 
       container.innerHTML = `
         <div class="ex-card">
           <div class="ex-title">${ex.name}</div>
+          <div class="ex-target">Cible : ${ex.target}</div>
+          ${historyHTML}
           <div class="img-box">
-            ${exData.img ? `<img src="${exData.img}">` : '<span style="color:#666">Aucune image d’exercice</span>'}
+            ${storedImg ? `<img src="${storedImg}">` : '<span style="color:#666; font-size:0.75rem;">Aucune image</span>'}
           </div>
-          <input type="file" id="img-input" accept="image/*" style="display:none" onchange="uploadExImage(event)">
-          <button class="upload-btn" onclick="document.getElementById('img-input').click()">📷 Importer / Changer Photo Exo</button>
+          <input type="file" id="img-input" accept="image/*" style="display:none" onchange="uploadExImage(event, '${exKey}')">
+          <button class="upload-btn" onclick="document.getElementById('img-input').click()">📷 Changer Image Exo</button>
           
           <div class="sets-header">
             <div>Série</div>
@@ -216,35 +315,33 @@
         </div>
       `;
 
-      // Bouton Précédent visible sauf au premier exo
-      const prevBtn = document.getElementById('prev-btn');
-      prevBtn.style.display = state.currentExIndex > 0 ? 'block' : 'none';
-
-      // Libellé du bouton Suivant / Valider
+      document.getElementById('prev-btn').style.display = state.currentExIndex > 0 ? 'block' : 'none';
       document.getElementById('next-btn').innerText = 
-        state.currentExIndex === defaultWorkout.length - 1 ? 'Terminer ➔' : 'Suivant ➔';
+        state.currentExIndex === currentDayObj.exercises.length - 1 ? 'Terminer la séance ➔' : 'Exercice Suivant ➔';
     }
 
-    function updateSet(index, field, value) {
-      const exKey = `day_${state.currentDay}_ex_${state.currentExIndex}`;
-      state.exercisesData[exKey].sets[index][field] = value;
-      saveData();
+    function updateBuffer(index, field, value) {
+      currentSetsBuffer[index][field] = value;
     }
 
     function addSet() {
-      const exKey = `day_${state.currentDay}_ex_${state.currentExIndex}`;
-      state.exercisesData[exKey].sets.push({ weight: '', reps: '' });
-      saveData();
+      currentSetsBuffer.push({ weight: '', reps: '' });
       renderCurrentExercise();
     }
 
-    function uploadExImage(e) {
+    function saveCurrentExerciseHistory() {
+      const currentDayObj = program[state.currentDayIndex];
+      const ex = currentDayObj.exercises[state.currentExIndex];
+      state.workoutHistory[ex.name] = { sets: [...currentSetsBuffer] };
+      saveData();
+    }
+
+    function uploadExImage(e, exKey) {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = function(evt) {
-          const exKey = `day_${state.currentDay}_ex_${state.currentExIndex}`;
-          state.exercisesData[exKey].img = evt.target.result;
+          state.exerciseImages[exKey] = evt.target.result;
           saveData();
           renderCurrentExercise();
         };
@@ -253,12 +350,19 @@
     }
 
     function nextExercise() {
-      if (state.currentExIndex < defaultWorkout.length - 1) {
+      saveCurrentExerciseHistory();
+      currentSetsBuffer = null;
+
+      const currentDayObj = program[state.currentDayIndex];
+      if (state.currentExIndex < currentDayObj.exercises.length - 1) {
         state.currentExIndex++;
       } else {
-        state.currentDay++;
+        // Fin de séance : on incrémente globalement le compteur de séances (monte à 2, 8, 89...)
+        state.totalSessionsCount++;
         state.currentExIndex = 0;
-        alert(`Séance terminée ! Rendez-vous au Jour ${state.currentDay} !`);
+        // Passage au jour suivant (J1 -> J2 -> J3 -> J4 en boucle)
+        state.currentDayIndex = (state.currentDayIndex + 1) % program.length;
+        alert(`Séance validée ! Passage à la séance ${state.totalSessionsCount}.`);
       }
       saveData();
       renderCurrentExercise();
@@ -266,8 +370,9 @@
 
     function prevExercise() {
       if (state.currentExIndex > 0) {
+        saveCurrentExerciseHistory();
+        currentSetsBuffer = null;
         state.currentExIndex--;
-        saveData();
         renderCurrentExercise();
       }
     }
@@ -287,7 +392,9 @@
 
     function renderPhotos() {
       const grid = document.getElementById('evo-photos-grid');
-      grid.innerHTML = state.photos.map(p => `<img src="${p}" style="width:100%; border-radius:8px; height:150px; object-fit:cover;">`).join('');
+      if (grid) {
+        grid.innerHTML = state.photos.map(p => `<img src="${p}" style="width:100%; border-radius:8px; height:130px; object-fit:cover;">`).join('');
+      }
     }
 
     renderCurrentExercise();
