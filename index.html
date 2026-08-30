@@ -1,1 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Recompo App - Suivi & Entraînement</title>
+    <!-- Chart.js pour les graphiques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-main: #121214;
+            --bg-card: #1e1e24;
+            --primary: #ffd700;
+            --text-main: #ffffff;
+            --text-muted: #a0a0ab;
+            --border: #2e2e38;
+            --accent: #22c55e;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding-bottom: 70px;
+        }
+
+        header {
+            background-color: var(--bg-card);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Nav Bottom Bar */
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--bg-card);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 25%;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+            margin-bottom: 3px;
+        }
+
+        /* Cartes Exercices */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .badge {
+            background-color: rgba(255, 215, 0, 0.15);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .exo-img {
+            width: 100%;
+            height: 140px;
+            background-color: #2a2a35;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+
+        .inputs-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .input-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-box label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .input-box input {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .btn-valid {
+            width: 100%;
+            background-color: var(--primary);
+            color: black;
+            font-weight: bold;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .last-perf {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-top: 5px;
+        }
+
+        /* Photos UI */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .photo-slot {
+            aspect-ratio: 3/4;
+            background-color: var(--bg-card);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .photo-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Selector séances */
+        .seance-select {
+            width: 100%;
+            background-color: var(--bg-card);
+            color: white;
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 id="header-title">Aujourd'hui - Séance</h1>
+    </header>
+
+    <!-- ONGLET 1: SEANCE DU JOUR -->
+    <div id="tab-seance" class="tab-content active">
+        <select id="seance-selector" class="seance-select" onchange="loadSeance()">
+            <option value="push">Jour 1 : Haut du corps (Push)</option>
+            <option value="lowerA">Jour 2 : Bas du corps A (Hanche-dominant)</option>
+            <option value="pull">Jour 3 : Haut du corps (Pull)</option>
+            <option value="lowerB">Jour 4 : Bas du corps B (Quadriceps)</option>
+        </select>
+
+        <div id="exo-container"></div>
+
+        <button class="btn-valid" onclick="validerSeance()">Valider la séance</button>
+    </div>
+
+    <!-- ONGLET 2: PHOTOS / TRANSITION -->
+    <div id="tab-photos" class="tab-content">
+        <div class="card">
+            <h3>Photos de Suivi</h3>
+            <p style="font-size:0.85rem; color: var(--text-muted); margin-bottom: 15px;">Ajoute tes photos à chaque vacances scolaires pour suivre l'évolution.</p>
+            
+            <h4>Vue de Face</h4>
+            <div class="photo-grid">
+                <div class="photo-slot" onclick="triggerPhoto('face-d')"><span id="lbl-face-d">+ Début</span><img id="img-face-d" style="display:none;"><input type="file" id="file-face-d" accept="image/*" onchange="uploadPhoto(event, 'face-d')"></div>
+                <div class="photo-slot" onclick="triggerPhoto('face-n')"><span id="lbl-face-n">+ Noël</span><img id="img-face-n" style="display:none;"><input type="file" id="file-face-n" accept="image/*" onchange="uploadPhoto(event, 'face-n')"></div>
+                <div class="photo-slot" onclick="triggerPhoto('face-e')"><span id="lbl-face-e">+ Été</span><img id="img-face-e" style="display:none;"><input type="file" id="file-face-e" accept="image/*" onchange="uploadPhoto(event, 'face-e')"></div>
+            </div>
+
+            <h4>Vue de Dos</h4>
+            <div class="photo-grid">
+                <div class="photo-slot" onclick="triggerPhoto('dos-d')"><span id="lbl-dos-d">+ Début</span><img id="img-dos-d" style="display:none;"><input type="file" id="file-dos-d" accept="image/*" onchange="uploadPhoto(event, 'dos-d')"></div>
+                <div class="photo-slot" onclick="triggerPhoto('dos-n')"><span id="lbl-dos-n">+ Noël</span><img id="img-dos-n" style="display:none;"><input type="file" id="file-dos-n" accept="image/*" onchange="uploadPhoto(event, 'dos-n')"></div>
+                <div class="photo-slot" onclick="triggerPhoto('dos-e')"><span id="lbl-dos-e">+ Été</span><img id="img-dos-e" style="display:none;"><input type="file" id="file-dos-e" accept="image/*" onchange="uploadPhoto(event, 'dos-e')"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ONGLET 3: GRAPHES & PROGRESSION -->
+    <div id="tab-stats" class="tab-content">
+        <div class="card">
+            <h3>Progression des charges</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Charge maximale enregistrée par exercice.</p>
+            <canvas id="chartProgression"></canvas>
+        </div>
+    </div>
+
+    <!-- ONGLET 4: NUTRITION & CONSEILS -->
+    <div id="tab-nutrition" class="tab-content">
+        <div class="card">
+            <h3>Objectifs Quotidiens</h3>
+            <p><strong>Calories :</strong> ~2700 kcal / jour</p>
+            <p><strong>Protéines :</strong> ~180g / jour</p>
+            <p><strong>Eau :</strong> 2L à 2.5L / jour</p>
+        </div>
+        <div class="card">
+            <h3>Repère Repas du Midi</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Vise au moins 40g de protéines : Poulet/Dinde cuit, Fromage blanc/Skyr, Jambon, Plats préparés riches en prot.</p>
+        </div>
+    </div>
+
+    <!-- NAVBAR NAVIGATION -->
+    <nav>
+        <button class="nav-item active" onclick="switchTab('tab-seance', this)">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            Séance
+        </button>
+        <button class="nav-item" onclick="switchTab('tab-photos', this)">
+            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            Photos
+        </button>
+        <button class="nav-item" onclick="switchTab('tab-stats', this)">
+            <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+            Courbes
+        </button>
+        <button class="nav-item" onclick="switchTab('tab-nutrition', this)">
+            <svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.46 3.9 3.45 4.38l-.95 7.62h3l-.95-7.62C9.54 12.9 11 11.12 11 9zm7-7h-2v20h2V2z"/></svg>
+            Nutrition
+        </button>
+    </nav>
+
+    <script>
+        // Programme basé sur le PDF de recomposition
+        const programme = {
+            push: [
+                { id: "dc", name: "Développé couché barre", reps: "4 x 6-8", img: "🏋️‍♂️ (Zone Pectoraux)" },
+                { id: "dm", name: "Développé militaire haltères", reps: "3 x 8-10", img: "🏋️‍♂️ (Haltères Épaules)" },
+                { id: "dips", name: "Dips ou Pec Fly", reps: "3 x 10-12", img: "🦋 (Machine Fly/Dips)" },
+                { id: "el", name: "Élévations latérales", reps: "3 x 12-15", img: "💪 (Poulie / Haltères)" },
+                { id: "triceps", name: "Extensions triceps poulie", reps: "3 x 12-15", img: "🔌 (Poulie Corde)" }
+            ],
+            lowerA: [
+                { id: "sdt", name: "Soulevé de terre roumain", reps: "4 x 8-10", img: "🏋️‍♂️ (Barre / Haltères)" },
+                { id: "legpress", name: "Presse à cuisses", reps: "3 x 10-12", img: "🦵 (Leg Press 45°)" },
+                { id: "hipthrust", name: "Hip thrust", reps: "3 x 10-12", img: "🍑 (Banc / Machine)" },
+                { id: "legcurl", name: "Leg curl allongé", reps: "3 x 12-15", img: "🦵 (Machine Curl)" },
+                { id: "mollets", name: "Mollets debout", reps: "4 x 15", img: "🦶 (Machine Mollets)" }
+            ],
+            pull: [
+                { id: "tractions", name: "Tractions ou tirage vertical", reps: "4 x 6-10", img: "🧗‍♂️ (Tirage Poulie)" },
+                { id: "rowing", name: "Rowing barre ou machine", reps: "4 x 8-10", img: "🚣‍♂️ (Rowing T-Bar)" },
+                { id: "tirageh", name: "Tirage horizontal poulie", reps: "3 x 10-12", img: "🚣‍♂️ (Poignée V)" },
+                { id: "biceps", name: "Curl biceps barre", reps: "3 x 10-12", img: "💪 (Barre / Haltères)" },
+                { id: "facepull", name: "Face pull", reps: "3 x 15", img: "🔌 (Poulie Haute)" }
+            ],
+            lowerB: [
+                { id: "hacksquat", name: "Hack squat ou Leg press", reps: "4 x 8-10", img: "🦵 (Machine Hack)" },
+                { id: "fentes", name: "Fentes courtes / bulgares", reps: "3 x 10/jambe", img: "🦵 (Haltères)" },
+                { id: "legext", name: "Extensions quadriceps", reps: "3 x 12-15", img: "🦵 (Leg Extension)" },
+                { id: "abdos", name: "Abdos (gainage + obliques)", reps: "3-4 séries", img: "🧘‍♂️ (Tapis)" }
+            ]
+        };
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            el.classList.add('active');
+
+            if(tabId === 'tab-stats') renderChart();
+        }
+
+        function loadSeance() {
+            const key = document.getElementById('seance-selector').value;
+            const container = document.getElementById('exo-container');
+            container.innerHTML = "";
+
+            programme[key].forEach(exo => {
+                const lastPerf = JSON.parse(localStorage.getItem('perf_' + exo.id)) || { weight: '', reps: '' };
+                
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-title">${exo.name}</span>
+                        <span class="badge">${exo.reps}</span>
+                    </div>
+                    <div class="exo-img">${exo.img}</div>
+                    ${lastPerf.weight ? `<div class="last-perf">Dernière fois : ${lastPerf.weight} kg x ${lastPerf.reps} reps</div>` : ''}
+                    <div class="inputs-group">
+                        <div class="input-box">
+                            <label>Poids (kg)</label>
+                            <input type="number" id="w_${exo.id}" value="${lastPerf.weight}" placeholder="ex: 60">
+                        </div>
+                        <div class="input-box">
+                            <label>Répétitions</label>
+                            <input type="number" id="r_${exo.id}" value="${lastPerf.reps}" placeholder="ex: 10">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function validerSeance() {
+            const key = document.getElementById('seance-selector').value;
+            programme[key].forEach(exo => {
+                const w = document.getElementById(`w_${exo.id}`).value;
+                const r = document.getElementById(`r_${exo.id}`).value;
+                if (w || r) {
+                    localStorage.setItem('perf_' + exo.id, JSON.stringify({ weight: w, reps: r, date: new Date().toLocaleDateString() }));
+                }
+            });
+            alert("Séance enregistrée ! Bien joué 💪");
+            loadSeance();
+        }
+
+        // Photos Handling
+        function triggerPhoto(id) {
+            document.getElementById('file-' + id).click();
+        }
+
+        function uploadPhoto(event, id) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('img-' + id);
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    document.getElementById('lbl-' + id).style.display = 'none';
+                    localStorage.setItem('img_' + id, e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function loadPhotos() {
+            ['face-d', 'face-n', 'face-e', 'dos-d', 'dos-n', 'dos-e'].forEach(id => {
+                const saved = localStorage.getItem('img_' + id);
+                if(saved) {
+                    const img = document.getElementById('img-' + id);
+                    img.src = saved;
+                    img.style.display = 'block';
+                    document.getElementById('lbl-' + id).style.display = 'none';
+                }
+            });
+        }
+
+        // Graphique avec Chart.js
+        let chartInstance = null;
+        function renderChart() {
+            const ctx = document.getElementById('chartProgression').getContext('2d');
+            const labels = [];
+            const data = [];
+
+            // Extraction des meilleures charges sauvegardées
+            Object.keys(programme).forEach(k => {
+                programme[k].forEach(exo => {
+                    const perf = JSON.parse(localStorage.getItem('perf_' + exo.id));
+                    if (perf && perf.weight) {
+                        labels.push(exo.name.split(' ')[0]);
+                        data.push(perf.weight);
+                    }
+                });
+            });
+
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.length ? labels : ['Aucune donnée'],
+                    datasets: [{
+                        label: 'Poids Max (kg)',
+                        data: data.length ? data : [0],
+                        backgroundColor: '#ffd700',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#2e2e38' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Initialisation au chargement
+        window.onload = function() {
+            loadSeance();
+            loadPhotos();
+        };
+    </script>
+</body>
+</html>
