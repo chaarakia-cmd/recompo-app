@@ -3,183 +3,223 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Recompo App - Annuel</title>
+  <title>Recompo Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #09090b;
-      --card: #18181b;
-      --card-border: #27272a;
-      --accent: #e11d48;
-      --text: #f4f4f5;
-      --text-muted: #a1a1aa;
-      --input-bg: #27272a;
+      --bg: #090a0f;
+      --card-bg: rgba(22, 26, 36, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #f43f5e;
+      --accent-gradient: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+      --accent-glow: rgba(244, 63, 94, 0.35);
+      --text: #f8fafc;
+      --text-muted: #64748b;
+      --input-bg: rgba(15, 23, 42, 0.6);
+      --radius: 16px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 40px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; -webkit-font-smoothing: antialiased; }
 
-    /* Top Navigation */
+    /* Top Bar */
     .header {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 20px; background: #000; border-bottom: 1px solid var(--card-border);
-      position: sticky; top: 0; z-index: 100;
+      padding: 18px 20px; background: rgba(9, 10, 15, 0.8); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100;
     }
-    .header h1 { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-    .menu-btn { background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
+    .header .brand { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px; }
+    .header .brand span { color: var(--accent); }
 
-    /* Drawer Menu */
-    .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; z-index: 200; }
-    .menu-drawer { position: fixed; top: 0; right: -85%; width: 85%; height: 100%; background: var(--card); border-left: 1px solid var(--card-border); transition: 0.3s ease; z-index: 201; padding: 20px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
-    .menu-drawer.active { right: 0; }
-    .menu-drawer button { background: var(--input-bg); border: none; color: var(--text); padding: 12px 14px; text-align: left; font-size: 0.9rem; font-weight: 600; border-radius: 8px; cursor: pointer; }
-    .menu-drawer h3 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-top: 10px; letter-spacing: 0.5px; }
+    /* Bottom Nav Bar (Style App Native) */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 68px;
+      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px);
+      border-top: 1px solid var(--card-border); display: flex; justify-content: space-around;
+      align-items: center; z-index: 100; padding-bottom: 6px;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: none; color: var(--text-muted); font-size: 0.68rem;
+      font-weight: 600; cursor: pointer; transition: 0.2s; flex: 1;
+    }
+    .nav-item .icon { font-size: 1.25rem; }
+    .nav-item.active { color: var(--accent); }
 
-    /* Container main */
-    .container { padding: 16px; max-width: 500px; margin: 0 auto; }
+    /* Main Container */
+    .container { padding: 16px; max-width: 480px; margin: 0 auto; }
 
-    /* Day Counter Header */
+    /* Hero Banner */
     .day-banner {
-      background: linear-gradient(135deg, #e11d48, #9f1239);
-      border-radius: 12px; padding: 16px; margin-bottom: 16px;
+      background: var(--accent-gradient); border-radius: var(--radius);
+      padding: 20px; margin-bottom: 16px; box-shadow: 0 10px 25px -5px var(--accent-glow);
+      position: relative; overflow: hidden;
     }
-    .day-banner h2 { font-size: 1.3rem; font-weight: 900; }
-    .day-banner p { font-size: 0.85rem; opacity: 0.9; font-weight: 600; }
-    .day-banner .progress-txt { font-size: 0.75rem; text-transform: uppercase; margin-top: 4px; opacity: 0.8; }
+    .day-banner::after {
+      content: ''; position: absolute; top: -50%; right: -20%; width: 150px; height: 150px;
+      background: rgba(255,255,255,0.1); transform: rotate(45deg); pointer-events: none;
+    }
+    .day-banner h2 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+    .day-banner p { font-size: 0.9rem; opacity: 0.9; font-weight: 600; margin-top: 2px; }
+    .day-banner .progress-txt { font-size: 0.72rem; text-transform: uppercase; margin-top: 8px; opacity: 0.85; letter-spacing: 0.5px; font-weight: 700; }
 
-    /* Exercise Card Focus */
-    .ex-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
-    .ex-title { font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
-    .ex-target { font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
+    /* Card Exercice */
+    .ex-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 18px; margin-bottom: 16px;
+      backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .ex-title { font-size: 1.25rem; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+    .ex-target { font-size: 0.8rem; color: var(--accent); font-weight: 700; margin-top: 2px; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* Bulle Séance Précédente */
+    /* Bulle Historique (Style Notif) */
     .history-badge {
-      background: #1e293b; border: 1px solid #334155; border-radius: 8px;
-      padding: 8px 12px; margin-bottom: 14px; font-size: 0.8rem; color: #94a3b8;
+      background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.8rem; color: #94a3b8;
+      display: flex; align-items: center; gap: 8px;
     }
-    .history-badge strong { color: #f1f5f9; }
+    .history-badge strong { color: #f1f5f9; font-weight: 700; }
 
-    .img-box { width: 100%; height: 170px; background: var(--input-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden; border: 1px dashed #444; }
+    .img-box {
+      width: 100%; height: 160px; background: var(--input-bg); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 10px;
+      overflow: hidden; border: 1px dashed rgba(255,255,255,0.15);
+    }
     .img-box img { width: 100%; height: 100%; object-fit: cover; }
-    .upload-btn { background: #3f3f46; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; margin-bottom: 14px; width: 100%; }
+    .upload-btn {
+      background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid var(--card-border);
+      padding: 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 600;
+      cursor: pointer; margin-bottom: 16px; width: 100%; transition: 0.2s;
+    }
 
-    /* Sets Table Dynamic */
-    .sets-header { display: grid; grid-template-columns: 35px 1fr 1fr; gap: 8px; text-align: center; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
-    .set-row { display: grid; grid-template-columns: 35px 1fr 1fr; gap: 8px; align-items: center; margin-bottom: 8px; }
-    .set-num { font-weight: bold; color: var(--accent); text-align: center; font-size: 0.9rem; }
-    .set-row input { background: var(--input-bg); border: 1px solid var(--card-border); color: #fff; padding: 10px; text-align: center; border-radius: 8px; font-size: 0.95rem; font-weight: 600; width: 100%; }
+    /* Sets Grid Input */
+    .sets-header { display: grid; grid-template-columns: 40px 1fr 1fr; gap: 10px; text-align: center; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-bottom: 10px; letter-spacing: 0.5px; }
+    .set-row { display: grid; grid-template-columns: 40px 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 10px; }
+    .set-num { font-weight: 800; color: var(--accent); text-align: center; font-size: 0.85rem; background: rgba(244, 63, 94, 0.1); border-radius: 8px; padding: 8px 0; }
+    .set-row input {
+      background: var(--input-bg); border: 1px solid var(--card-border); color: #fff;
+      padding: 12px; text-align: center; border-radius: 10px; font-size: 1rem;
+      font-weight: 700; width: 100%; outline: none; transition: 0.2s;
+    }
+    .set-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
 
-    /* Navigation Buttons */
-    .nav-actions { display: flex; gap: 10px; margin-top: 10px; }
-    .btn-action { flex: 1; background: var(--accent); color: #fff; border: none; padding: 14px; border-radius: 10px; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; }
-    .btn-secondary { background: var(--input-bg); margin-top: 8px; }
-    .btn-nav-prev { background: #3f3f46; }
+    /* Action Buttons */
+    .btn-action {
+      background: var(--accent-gradient); color: #fff; border: none; padding: 16px;
+      border-radius: 12px; font-size: 0.9rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.5px; cursor: pointer; text-align: center; box-shadow: 0 4px 15px var(--accent-glow);
+      transition: transform 0.1s active;
+    }
+    .btn-action:active { transform: scale(0.98); }
+    .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); box-shadow: none; color: #f1f5f9; margin-top: 10px; }
+    .btn-nav-prev { background: rgba(255,255,255,0.08); box-shadow: none; color: #94a3b8; }
 
-    /* Views & Modals */
-    .view-modal { display: none; background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--card-border); margin-top: 10px; }
-    .guide-card { background: var(--input-bg); padding: 12px; border-radius: 8px; margin-bottom: 10px; }
-    .guide-card h3 { font-size: 0.9rem; color: var(--accent); margin-bottom: 4px; }
-    .guide-card p, .guide-card li { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
-    .guide-card ul { padding-left: 15px; }
+    /* Modals & Views */
+    .view-modal { display: none; }
+    .guide-card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 16px; border-radius: var(--radius); margin-bottom: 12px; }
+    .guide-card h3 { font-size: 0.95rem; color: var(--accent); margin-bottom: 6px; font-weight: 700; }
+    .guide-card p, .guide-card li { font-size: 0.85rem; color: #cbd5e1; line-height: 1.5; }
+    .guide-card ul { padding-left: 18px; }
   </style>
 </head>
 <body>
 
   <div class="header">
-    <h1>Recompo App</h1>
-    <button class="menu-btn" onclick="toggleMenu()">⋮</button>
-  </div>
-
-  <div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
-  <div class="menu-drawer" id="drawer">
-    <h3>Navigation</h3>
-    <button onclick="showView('workout')">🏋️ Séance du jour</button>
-    <button onclick="showView('photos')">🖼️ Photos & Évolution</button>
-    
-    <h3>Contenu du PDF</h3>
-    <button onclick="showView('diet')">🥩 Diète & Repas</button>
-    <button onclick="showView('planning')">📅 Calendrier Scolaire & Deloads</button>
-    <button onclick="showView('rules')">⚠️ Règles & Genou / Gynéco</button>
+    <div class="brand">⚡ RECOMPO <span>PRO</span></div>
   </div>
 
   <div class="container">
     
-    <!-- MAIN WORKOUT VIEW -->
-    <div id="workout-view">
+    <!-- SEANCE VIEW -->
+    <div id="workout-view" class="view-modal" style="display:block;">
       <div class="day-banner">
         <h2 id="day-counter">SÉANCE 1</h2>
-        <p id="day-name">Jour 1 — Haut du corps (Push)</p>
+        <p id="day-name">Jour 1 — Push</p>
         <div class="progress-txt" id="progression-tracker">Exercice 1 / 5</div>
       </div>
 
       <div id="exercise-container"></div>
 
-      <div class="nav-actions">
-        <button class="btn-action btn-nav-prev" id="prev-btn" onclick="prevExercise()" style="display:none">⬅ Précédent</button>
-        <button class="btn-action" id="next-btn" onclick="nextExercise()">Exercice Suivant ➔</button>
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <button class="btn-action btn-nav-prev" id="prev-btn" onclick="prevExercise()" style="display:none; flex:0.4;">⬅ Back</button>
+        <button class="btn-action" id="next-btn" onclick="nextExercise()" style="flex:1;">Exercice Suivant ➔</button>
       </div>
-      <button class="btn-action btn-secondary" onclick="addSet()">+ Ajouter une série</button>
+      <button class="btn-action btn-secondary" style="width:100%;" onclick="addSet()">+ Ajouter une série</button>
     </div>
 
-    <!-- DIET VIEW -->
+    <!-- DIETE VIEW -->
     <div id="diet-view" class="view-modal">
-      <h2>Alimentation & Cibles</h2><br>
+      <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:15px;">Alimentation & Macros</h2>
       <div class="guide-card">
-        <h3>🔥 Calories & Macros Cibles</h3>
-        <p>~2700 kcal/jour (Léger déficit)<br><b>Protéines :</b> ~180g | <b>Glucides :</b> ~310g | <b>Lipides :</b> ~80g</p>
+        <h3>🔥 Targets Réelles</h3>
+        <p><b>~2700 kcal/jour</b> (léger déficit)<br><b>Protéines :</b> 180g | <b>Glucides :</b> 310g | <b>Lipides :</b> 80g</p>
       </div>
       <div class="guide-card">
-        <h3>🥪 Organisation Réelle</h3>
-        <p><b>Matin :</b> Rien, eau / café.<br>
-        <b>Midi (Supermarché) :</b> Vise 40g+ prot (poulet/dinde, œufs durs, skyr, jambon).<br>
-        <b>Soir :</b> Repas de famille, prioriser les protéines.<br>
-        <b>Hydratation :</b> 2 à 2.5L d'eau par jour.</p>
+        <h3>🥪 Routine Quotidienne</h3>
+        <p><b>Matin :</b> Jeûne (Eau / Café).<br>
+        <b>Midi :</b> 40g+ Protéines (Poulet/Dinde, œufs, skyr, jambon).<br>
+        <b>Soir :</b> Repas normal (priorité protéines).<br>
+        <b>Eau :</b> 2L à 2.5L par jour.</p>
       </div>
-      <button class="btn-action btn-secondary" onclick="showView('workout')">Fermer</button>
     </div>
 
     <!-- PLANNING VIEW -->
     <div id="planning-view" class="view-modal">
-      <h2>Calendrier Scolaire & Périodes</h2><br>
+      <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:15px;">Programme Annuel</h2>
       <div class="guide-card">
-        <h3>🗓️ Étapes de l'année</h3>
+        <h3>🗓️ Cycles & Deloads</h3>
         <ul>
-          <li><b>Mi-sept → Mi-oct :</b> Adaptation technique, charges modérées (focus genou).</li>
-          <li><b>Mi-oct → Toussaint :</b> Hypertrophie (Vacances = Deload).</li>
-          <li><b>Nov → Noël :</b> Hypertrophie progressive.</li>
-          <li><b>Vacances Noël :</b> Réévaluation photos/poids (ajustement ±150 kcal).</li>
-          <li><b>Janvier → Février :</b> Hypertrophie + volume.</li>
-          <li><b>Février → Printemps :</b> Hypertrophie + volume.</li>
-          <li><b>Avril → Juin :</b> Phase de force (reps basses 4-6).</li>
+          <li><b>Mi-sept → Mi-oct :</b> Adaptation technique & charges contrôlées.</li>
+          <li><b>Toussaint / Noël / Février / Printemps :</b> Vacances = Semaines de Deload.</li>
+          <li><b>Avril → Juin :</b> Phase de Force (Reps basses 4-6).</li>
           <li><b>Fin Juin :</b> Bilan final avant l'été.</li>
         </ul>
       </div>
-      <button class="btn-action btn-secondary" onclick="showView('workout')">Fermer</button>
     </div>
 
-    <!-- RULES VIEW -->
+    <!-- CONSIGNES VIEW -->
     <div id="rules-view" class="view-modal">
-      <h2>Notes & Consignes</h2><br>
+      <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:15px;">Consignes & Santé</h2>
       <div class="guide-card">
-        <h3>🦵 Sensibilité au Genou</h3>
-        <p>On évite le squat profond lourd et les impacts. Remplacé par leg press, hack squat guidé et fentes courtes.</p>
+        <h3>🦵 Genou</h3>
+        <p>Pas de squat libre profond ni de course. Leg press, hack squat guidé et fentes courtes prioritaires.</p>
       </div>
       <div class="guide-card">
-        <h3>🧬 Gynéco & Repos</h3>
-        <p>Le pec fly renforce le muscle dessous mais ne supprime pas le tissu glandulaire. Repos muscu : 90-120s sur mouvements lourds, 45-60s en isolation.</p>
+        <h3>⏱️ Temps de Repos</h3>
+        <p><b>Gros mouvements :</b> 90 à 120s<br><b>Isolation :</b> 45 à 60s</p>
       </div>
-      <button class="btn-action btn-secondary" onclick="showView('workout')">Fermer</button>
     </div>
 
     <!-- PHOTOS VIEW -->
     <div id="photos-view" class="view-modal">
-      <h2>Suivi Physique</h2>
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Photos à chaque période de vacances scolaires.</p>
+      <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:10px;">Évolution Physique</h2>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Photos aux vacances scolaires.</p>
       <input type="file" id="evo-photo-input" accept="image/*" onchange="uploadEvoPhoto(event)" style="display:none">
-      <button class="btn-action" onclick="document.getElementById('evo-photo-input').click()">📷 Ajouter une photo</button>
+      <button class="btn-action" style="width:100%;" onclick="document.getElementById('evo-photo-input').click()">📷 Importer une photo</button>
       <div id="evo-photos-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;"></div>
-      <button class="btn-action btn-secondary" onclick="showView('workout')">Fermer</button>
     </div>
 
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <button class="nav-item active" id="tab-workout" onclick="switchTab('workout')">
+      <span class="icon">🏋️</span>Séance
+    </button>
+    <button class="nav-item" id="tab-diet" onclick="switchTab('diet')">
+      <span class="icon">🥩</span>Diète
+    </button>
+    <button class="nav-item" id="tab-planning" onclick="switchTab('planning')">
+      <span class="icon">📅</span>Planning
+    </button>
+    <button class="nav-item" id="tab-rules" onclick="switchTab('rules')">
+      <span class="icon">⚠️</span>Consignes
+    </button>
+    <button class="nav-item" id="tab-photos" onclick="switchTab('photos')">
+      <span class="icon">🖼️</span>Photos
+    </button>
   </div>
 
   <script>
@@ -229,10 +269,10 @@
       }
     ];
 
-    let state = JSON.parse(localStorage.getItem('recompo_annuel_state')) || {
+    let state = JSON.parse(localStorage.getItem('recompo_pro_state')) || {
       currentDayIndex: 0,
       currentExIndex: 0,
-      totalSessionsCount: 1, // Le compteur global qui monte à 1, 8, 89...
+      totalSessionsCount: 1,
       workoutHistory: {},
       exerciseImages: {},
       photos: []
@@ -241,22 +281,16 @@
     let currentSetsBuffer = null;
 
     function saveData() {
-      localStorage.setItem('recompo_annuel_state', JSON.stringify(state));
+      localStorage.setItem('recompo_pro_state', JSON.stringify(state));
     }
 
-    function toggleMenu() {
-      const drawer = document.getElementById('drawer');
-      const overlay = document.getElementById('overlay');
-      drawer.classList.toggle('active');
-      overlay.style.display = drawer.classList.contains('active') ? 'block' : 'none';
-    }
-
-    function showView(viewName) {
-      if (document.getElementById('drawer').classList.contains('active')) toggleMenu();
-      ['workout-view', 'diet-view', 'planning-view', 'rules-view', 'photos-view'].forEach(v => {
-        document.getElementById(v).style.display = 'none';
-      });
-      document.getElementById(viewName + '-view').style.display = 'block';
+    function switchTab(tabName) {
+      document.querySelectorAll('.view-modal').forEach(v => v.style.display = 'none');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      
+      document.getElementById(tabName + '-view').style.display = 'block';
+      document.getElementById('tab-' + tabName).classList.add('active');
+      window.scrollTo(0, 0);
     }
 
     function renderCurrentExercise() {
@@ -265,31 +299,28 @@
 
       document.getElementById('day-counter').innerText = `SÉANCE ${state.totalSessionsCount}`;
       document.getElementById('day-name').innerText = currentDayObj.title;
-      document.getElementById('progression-tracker').innerText = `Exercice ${state.currentExIndex + 1} / ${currentDayObj.exercises.length}`;
+      document.getElementById('progression-tracker').innerText = `EXERCICE ${state.currentExIndex + 1} SUR ${currentDayObj.exercises.length}`;
 
       const container = document.getElementById('exercise-container');
       const exKey = ex.name;
 
-      // Historique séance précédente
       const lastHistory = state.workoutHistory[exKey] || null;
-      let historyHTML = `<div class="history-badge">💡 <i>Première fois sur cet exercice. Enregistre tes perfs !</i></div>`;
+      let historyHTML = `<div class="history-badge">💡 <strong>Conseil :</strong> Première fois enregistrée sur cet exo !</div>`;
       if (lastHistory && lastHistory.sets && lastHistory.sets.length > 0) {
-        const perfStr = lastHistory.sets.map((s, idx) => `S${idx+1}: <b>${s.weight || 0}kg</b> × <b>${s.reps || 0}</b>`).join(' | ');
-        historyHTML = `<div class="history-badge">📌 <strong>Dernière séance :</strong> ${perfStr}</div>`;
+        const perfStr = lastHistory.sets.map((s, idx) => `S${idx+1}: <b>${s.weight || 0}k</b>×<b>${s.reps || 0}</b>`).join(' · ');
+        historyHTML = `<div class="history-badge">📌 <strong>Dernier coup :</strong> ${perfStr}</div>`;
       }
 
       if (!currentSetsBuffer) {
-        // Initialiser 3 ou 4 lignes par défaut selon l'exercice
-        let defaultLen = 4;
-        if (ex.target.includes('3 séries')) defaultLen = 3;
+        let defaultLen = ex.target.includes('3 séries') ? 3 : 4;
         currentSetsBuffer = Array(defaultLen).fill(null).map(() => ({ weight: '', reps: '' }));
       }
 
       let setsHTML = currentSetsBuffer.map((set, i) => `
         <div class="set-row">
           <div class="set-num">S${i+1}</div>
-          <input type="number" placeholder="Kg" value="${set.weight || ''}" onchange="updateBuffer(${i}, 'weight', this.value)">
-          <input type="number" placeholder="Reps" value="${set.reps || ''}" onchange="updateBuffer(${i}, 'reps', this.value)">
+          <input type="number" placeholder="kg" value="${set.weight || ''}" onchange="updateBuffer(${i}, 'weight', this.value)">
+          <input type="number" placeholder="reps" value="${set.reps || ''}" onchange="updateBuffer(${i}, 'reps', this.value)">
         </div>
       `).join('');
 
@@ -298,17 +329,17 @@
       container.innerHTML = `
         <div class="ex-card">
           <div class="ex-title">${ex.name}</div>
-          <div class="ex-target">Cible : ${ex.target}</div>
+          <div class="ex-target">${ex.target}</div>
           ${historyHTML}
           <div class="img-box">
-            ${storedImg ? `<img src="${storedImg}">` : '<span style="color:#666; font-size:0.75rem;">Aucune image</span>'}
+            ${storedImg ? `<img src="${storedImg}">` : '<span style="color:#475569; font-size:0.75rem; font-weight:600;">Aucune démo photo</span>'}
           </div>
           <input type="file" id="img-input" accept="image/*" style="display:none" onchange="uploadExImage(event, '${exKey}')">
-          <button class="upload-btn" onclick="document.getElementById('img-input').click()">📷 Changer Image Exo</button>
+          <button class="upload-btn" onclick="document.getElementById('img-input').click()">📷 Ajouter / Modifier Image</button>
           
           <div class="sets-header">
-            <div>Série</div>
-            <div>Poids (kg)</div>
+            <div>N°</div>
+            <div>Charge</div>
             <div>Répétitions</div>
           </div>
           <div id="sets-list">${setsHTML}</div>
@@ -317,7 +348,7 @@
 
       document.getElementById('prev-btn').style.display = state.currentExIndex > 0 ? 'block' : 'none';
       document.getElementById('next-btn').innerText = 
-        state.currentExIndex === currentDayObj.exercises.length - 1 ? 'Terminer la séance ➔' : 'Exercice Suivant ➔';
+        state.currentExIndex === currentDayObj.exercises.length - 1 ? 'Valider la séance ➔' : 'Exercice Suivant ➔';
     }
 
     function updateBuffer(index, field, value) {
@@ -357,12 +388,10 @@
       if (state.currentExIndex < currentDayObj.exercises.length - 1) {
         state.currentExIndex++;
       } else {
-        // Fin de séance : on incrémente globalement le compteur de séances (monte à 2, 8, 89...)
         state.totalSessionsCount++;
         state.currentExIndex = 0;
-        // Passage au jour suivant (J1 -> J2 -> J3 -> J4 en boucle)
         state.currentDayIndex = (state.currentDayIndex + 1) % program.length;
-        alert(`Séance validée ! Passage à la séance ${state.totalSessionsCount}.`);
+        alert(`Séance terminée ! En avant pour la séance ${state.totalSessionsCount}.`);
       }
       saveData();
       renderCurrentExercise();
@@ -393,7 +422,7 @@
     function renderPhotos() {
       const grid = document.getElementById('evo-photos-grid');
       if (grid) {
-        grid.innerHTML = state.photos.map(p => `<img src="${p}" style="width:100%; border-radius:8px; height:130px; object-fit:cover;">`).join('');
+        grid.innerHTML = state.photos.map(p => `<img src="${p}" style="width:100%; border-radius:12px; height:130px; object-fit:cover;">`).join('');
       }
     }
 
