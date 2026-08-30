@@ -46,8 +46,7 @@
     .day-banner span { font-size: 0.85rem; opacity: 0.9; }
 
     /* Exercise Card Focus */
-    .ex-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 16px; margin-bottom: 16px; display: none; }
-    .ex-card.active { display: block; }
+    .ex-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
     .ex-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
 
     .img-box { width: 100%; height: 200px; background: var(--input-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; overflow: hidden; border: 1px dashed #444; }
@@ -60,9 +59,11 @@
     .set-num { font-weight: bold; color: var(--accent); text-align: center; }
     .set-row input { background: var(--input-bg); border: 1px solid var(--card-border); color: #fff; padding: 10px; text-align: center; border-radius: 8px; font-size: 1rem; font-weight: 600; width: 100%; }
 
-    /* Bottom Actions */
-    .btn-action { width: 100%; background: var(--accent); color: #fff; border: none; padding: 14px; border-radius: 10px; font-size: 1rem; font-weight: 700; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
+    /* Navigation Buttons */
+    .nav-actions { display: flex; gap: 10px; margin-top: 10px; }
+    .btn-action { flex: 1; background: var(--accent); color: #fff; border: none; padding: 14px; border-radius: 10px; font-size: 0.95rem; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; }
     .btn-secondary { background: var(--input-bg); margin-top: 8px; }
+    .btn-nav-prev { background: #3f3f46; }
 
     /* Views */
     .view-modal { display: none; background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--card-border); margin-top: 20px; }
@@ -93,13 +94,16 @@
           <span id="date-today">Aujourd'hui</span>
           <h2 id="day-counter">JOUR 1</h2>
         </div>
-        <span id="progression-tracker">Exo 1 / 5</span>
+        <span id="progression-tracker">Exo 1 / 4</span>
       </div>
 
       <!-- Single Exercise Mobile Focus -->
       <div id="exercise-container"></div>
 
-      <button class="btn-action" id="next-btn" onclick="nextExercise()">Exercice Suivant ➔</button>
+      <div class="nav-actions">
+        <button class="btn-action btn-nav-prev" id="prev-btn" onclick="prevExercise()" style="display:none">⬅ Précédent</button>
+        <button class="btn-action" id="next-btn" onclick="nextExercise()">Suivant ➔</button>
+      </div>
       <button class="btn-action btn-secondary" onclick="addSet()">+ Ajouter une série</button>
     </div>
 
@@ -136,7 +140,6 @@
   </div>
 
   <script>
-    // App State
     let state = JSON.parse(localStorage.getItem('recompo_state')) || {
       currentDay: 1,
       currentExIndex: 0,
@@ -144,7 +147,6 @@
       photos: []
     };
 
-    // Preset exercices par défaut
     const defaultWorkout = [
       { name: "Développé Couché", sets: 4 },
       { name: "Incliné Haltères", sets: 3 },
@@ -164,7 +166,7 @@
     }
 
     function showView(viewName) {
-      toggleMenu();
+      if (document.getElementById('drawer').classList.contains('active')) toggleMenu();
       document.getElementById('workout-view').style.display = viewName === 'workout' ? 'block' : 'none';
       document.getElementById('guidelines-view').style.display = viewName === 'guidelines' ? 'block' : 'none';
       document.getElementById('photos-view').style.display = viewName === 'photos' ? 'block' : 'none';
@@ -182,7 +184,7 @@
       if (!state.exercisesData[exKey]) {
         state.exercisesData[exKey] = {
           img: '',
-          sets: Array(ex.sets).fill({ weight: '', reps: '' })
+          sets: Array(ex.sets).fill(null).map(() => ({ weight: '', reps: '' }))
         };
       }
 
@@ -197,7 +199,7 @@
       `).join('');
 
       container.innerHTML = `
-        <div class="ex-card active">
+        <div class="ex-card">
           <div class="ex-title">${ex.name}</div>
           <div class="img-box">
             ${exData.img ? `<img src="${exData.img}">` : '<span style="color:#666">Aucune image d’exercice</span>'}
@@ -214,8 +216,13 @@
         </div>
       `;
 
+      // Bouton Précédent visible sauf au premier exo
+      const prevBtn = document.getElementById('prev-btn');
+      prevBtn.style.display = state.currentExIndex > 0 ? 'block' : 'none';
+
+      // Libellé du bouton Suivant / Valider
       document.getElementById('next-btn').innerText = 
-        state.currentExIndex === defaultWorkout.length - 1 ? 'Terminer la séance ➔' : 'Exercice Suivant ➔';
+        state.currentExIndex === defaultWorkout.length - 1 ? 'Terminer ➔' : 'Suivant ➔';
     }
 
     function updateSet(index, field, value) {
@@ -249,13 +256,20 @@
       if (state.currentExIndex < defaultWorkout.length - 1) {
         state.currentExIndex++;
       } else {
-        // Fin de la séance, incrémentation du compteur de jours automatiques (Jour 1 -> Jour 2 -> Jour 100...)
         state.currentDay++;
         state.currentExIndex = 0;
-        alert(`Séance terminée ! Bravo. Rendez-vous au Jour ${state.currentDay} !`);
+        alert(`Séance terminée ! Rendez-vous au Jour ${state.currentDay} !`);
       }
       saveData();
       renderCurrentExercise();
+    }
+
+    function prevExercise() {
+      if (state.currentExIndex > 0) {
+        state.currentExIndex--;
+        saveData();
+        renderCurrentExercise();
+      }
     }
 
     function uploadEvoPhoto(e) {
@@ -276,7 +290,6 @@
       grid.innerHTML = state.photos.map(p => `<img src="${p}" style="width:100%; border-radius:8px; height:150px; object-fit:cover;">`).join('');
     }
 
-    // Init App
     renderCurrentExercise();
     renderPhotos();
   </script>
