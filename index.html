@@ -168,6 +168,15 @@
     <!-- PLANNING VIEW -->
     <div id="planning-view" class="view-modal">
       <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:15px;">Programme Annuel</h2>
+      
+      <div class="guide-card">
+        <h3>📊 Seuil Annuel (Total : <span id="annual-total-display">0</span> / 160)</h3>
+        <div style="background: rgba(255,255,255,0.1); border-radius: 8px; height: 12px; overflow: hidden; margin: 10px 0;">
+          <div id="annual-progress-bar" style="background: var(--accent); height: 100%; width: 0%;"></div>
+        </div>
+        <p id="annual-status-text" style="font-size: 0.8rem; opacity: 0.9;"></p>
+      </div>
+
       <div class="guide-card">
         <h3>🗓️ Cycles & Deloads</h3>
         <ul>
@@ -232,7 +241,7 @@
           { name: "Développé militaire haltères", target: "3 séries x 8-10 reps" },
           { name: "Dips ou Pec fly", target: "3 séries x 10-12 reps" },
           { name: "Élévations latérales", target: "3 séries x 12-15 reps" },
-          { name: "Extensions triceps poulie", target: "3 séries x 12-15 reps" }
+          { name: "Extension triceps poulie", target: "3 séries x 12-15 reps" }
         ]
       },
       {
@@ -243,6 +252,7 @@
           { name: "Presse à cuisses", target: "3 séries x 10-12 reps" },
           { name: "Hip thrust", target: "3 séries x 10-12 reps" },
           { name: "Leg curl allongé", target: "3 séries x 12-15 reps" },
+          { name: "Marche du fermier (Finisher)", target: "3 séries x 30-40 mètres" },
           { name: "Mollets debout", target: "4 séries x 15 reps" }
         ]
       },
@@ -253,7 +263,7 @@
           { name: "Tractions ou Tirage vertical", target: "4 séries x 6-10 reps" },
           { name: "Rowing barre ou machine", target: "4 séries x 8-10 reps" },
           { name: "Tirage horizontal poulie", target: "3 séries x 10-12 reps" },
-          { name: "Curl biceps barre", target: "3 séries x 10-12 reps" },
+          { name: "Curl biceps barre EZ", target: "3 séries x 10-12 reps" },
           { name: "Face pull", target: "3 séries x 15 reps" }
         ]
       },
@@ -263,8 +273,8 @@
         exercises: [
           { name: "Hack squat ou Leg press (bas)", target: "4 séries x 8-10 reps" },
           { name: "Fentes courtes ou bulgares", target: "3 séries x 10 reps/jambe" },
-          { name: "Extensions quadriceps", target: "3 séries x 12-15 reps" },
-          { name: "Abdos (gainage + obliques)", target: "3-4 séries" }
+          { name: "Extension quadriceps", target: "3 séries x 12-15 reps" },
+          { name: "Gainage + obliques", target: "3-4 séries" }
         ]
       }
     ];
@@ -290,6 +300,11 @@
       
       document.getElementById(tabName + '-view').style.display = 'block';
       document.getElementById('tab-' + tabName).classList.add('active');
+      
+      if (tabName === 'planning') {
+        updateAnnualTracker();
+      }
+
       window.scrollTo(0, 0);
     }
 
@@ -353,6 +368,7 @@
 
     function updateBuffer(index, field, value) {
       currentSetsBuffer[index][field] = value;
+      saveCurrentExerciseHistory();
     }
 
     function addSet() {
@@ -404,6 +420,22 @@
         state.currentExIndex--;
         renderCurrentExercise();
       }
+    }
+
+    function updateAnnualTracker() {
+      const total = state.totalSessionsCount - 1;
+      document.getElementById('annual-total-display').innerText = total;
+      
+      const pct = Math.min(100, Math.round((total / 160) * 100));
+      document.getElementById('annual-progress-bar').style.width = pct + '%';
+
+      let status = "Début du programme";
+      if (total >= 160) status = "🔥 Objectif Optimal atteint (160+ séances) !";
+      else if (total >= 123) status = "✅ Trajectoire cible validée (3+ séances/sem en moyenne)";
+      else if (total >= 82) status = "⚠️ Minimum réaliste atteint (Zone de progression lente)";
+      else if (total > 0) status = "🚨 En dessous du plancher critique (Moins de 2 séances/sem)";
+      
+      document.getElementById('annual-status-text').innerText = status;
     }
 
     function uploadEvoPhoto(e) {
