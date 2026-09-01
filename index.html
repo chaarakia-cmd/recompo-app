@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Carnet de Musculation - 160 Jours</title>
+    <title>Suivi Recomposition Corporelle - 160 Séances</title>
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --accent: #ff4757;
-            --accent-green: #2ed573;
-            --text-main: #ffffff;
-            --text-muted: #a4b0be;
-            --border-color: #2f3542;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #3b82f6;
+            --accent-green: #22c55e;
+            --accent-gold: #eab308;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
         }
 
         * {
@@ -29,6 +30,81 @@
             padding-bottom: 90px;
         }
 
+        /* Dashboard Nutrition & Objectif */
+        .dashboard {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 15px;
+        }
+
+        .dash-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .macros-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .macro-box {
+            background: #0f172a;
+            padding: 8px 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .macro-val {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .macro-lbl {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* Compteur 160 séances & Paliers */
+        .progress-section {
+            background: #0f172a;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .progress-bar-bg {
+            background: #1e293b;
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Navigation Séances */
         .header-nav {
             display: flex;
             justify-content: space-between;
@@ -44,24 +120,25 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 8px 14px;
+            padding: 10px 14px;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
         }
 
         .nav-btn:disabled {
-            opacity: 0.3;
+            opacity: 0.2;
             cursor: not-allowed;
         }
 
         .session-title {
             text-align: center;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
         }
 
+        /* Cartes Exercices */
         .exercise-card {
             background: var(--card-bg);
             border-radius: 12px;
@@ -71,43 +148,44 @@
         }
 
         .exercise-title {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: bold;
-            color: var(--accent);
+            color: #60a5fa;
             margin-bottom: 4px;
         }
 
         .exercise-target {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
             margin-bottom: 10px;
         }
 
         .previous-perf {
-            background: #252a34;
+            background: #0f172a;
             padding: 6px 10px;
             border-radius: 6px;
             font-size: 12px;
-            color: #eccc68;
+            color: var(--accent-gold);
             margin-bottom: 12px;
+            border: 1px dashed var(--border-color);
         }
 
         .set-row {
             display: grid;
-            grid-template-columns: 50px 1fr 1fr;
+            grid-template-columns: 45px 1fr 1fr;
             gap: 10px;
             align-items: center;
             margin-bottom: 8px;
         }
 
         .set-label {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             color: var(--text-muted);
         }
 
         input {
-            background: #2f3542;
+            background: #0f172a;
             border: 1px solid var(--border-color);
             color: white;
             padding: 8px;
@@ -122,129 +200,185 @@
             border-color: var(--accent);
         }
 
-        /* Timer de repos flottant */
+        /* Timer Unique Phase 1 (90s) */
         .timer-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: #2f3542;
-            padding: 10px 15px;
+            background: #1e293b;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-top: 2px solid var(--accent);
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.5);
         }
 
         .timer-display {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             font-family: monospace;
+            color: var(--text-main);
         }
 
         .timer-btn {
             background: var(--accent-green);
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 10px 18px;
+            border-radius: 8px;
             font-weight: bold;
+            font-size: 14px;
         }
 
-        .utility-actions {
-            margin-top: 25px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .util-btn {
-            background: transparent;
-            border: 1px solid var(--text-muted);
-            color: var(--text-muted);
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 12px;
+        .timer-btn:active {
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
 
-    <div class="header-nav">
-        <button class="nav-btn" id="prevBtn" onclick="changeSession(-1)">↩ Séance préc.</button>
-        <div class="session-title" id="sessionTitle">Séance 1</div>
-        <button class="nav-btn" id="nextBtn" onclick="changeSession(1)">Séance suiv. ↪</button>
-    </div>
+    <!-- Dashboard PDF -->
+    <div class="dashboard">
+        <div class="dash-title">Objectifs Nutritionnels (PDF)</div>
+        <div class="macros-grid">
+            <div class="macro-box">
+                <div class="macro-val">~2700</div>
+                <div class="macro-lbl">kcal</div>
+            </div>
+            <div class="macro-box">
+                <div class="macro-val">180g</div>
+                <div class="macro-lbl">Protéines</div>
+            </div>
+            <div class="macro-box">
+                <div class="macro-val">310g</div>
+                <div class="macro-lbl">Glucides</div>
+            </div>
+            <div class="macro-box">
+                <div class="macro-val">80g</div>
+                <div class="macro-lbl">Lipides</div>
+            </div>
+        </div>
 
-    <div id="workoutContainer"></div>
-
-    <div class="utility-actions">
-        <button class="util-btn" onclick="exportData()">Exporter données</button>
-        <button class="util-btn" onclick="resetCurrentSession()">Effacer cette séance</button>
-    </div>
-
-    <div class="timer-bar">
-        <div>Repos : <span class="timer-display" id="timerDisplay">00:00</span></div>
-        <div>
-            <button class="timer-btn" onclick="startTimer(45)">45s</button>
-            <button class="timer-btn" onclick="startTimer(90)">90s</button>
-            <button class="timer-btn" onclick="startTimer(120)">120s</button>
+        <div class="progress-section">
+            <div class="progress-header">
+                <span id="palierLabel">Palier : Débutant</span>
+                <span id="sessionCounter">0 / 160 Séances</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
         </div>
     </div>
 
+    <!-- Navigation Séances -->
+    <div class="header-nav">
+        <button class="nav-btn" id="prevBtn" onclick="changeSession(-1)">↩ Précédente</button>
+        <div class="session-title" id="sessionTitle">Séance 1</div>
+        <button class="nav-btn" id="nextBtn" onclick="changeSession(1)">Suivante ↪</button>
+    </div>
+
+    <!-- Exercices -->
+    <div id="workoutContainer"></div>
+
+    <!-- Timer Fixe Hypertrophie (90s) -->
+    <div class="timer-bar">
+        <div>Repos (Phase 1) : <span class="timer-display" id="timerDisplay">01:30</span></div>
+        <button class="timer-btn" onclick="startTimer(90)">Lancer 90s</button>
+    </div>
+
 <script>
-// Structure de la programmation
+// Program d'entraînement du PDF (Split Upper/Lower avec contrainte genou)
 const program = [
     {
         id: 1,
-        name: "Séance 1 — Push (Haut du corps)",
+        name: "Séance 1 — Upper (Push/Pull)",
         exercises: [
-            { id: "s1_e1", name: "Développé couché barre", target: "4 séries × 6-8 reps", sets: 4 },
+            { id: "s1_e1", name: "Développé couché barre", target: "3 séries × 6-10 reps", sets: 3 },
             { id: "s1_e2", name: "Développé militaire haltères", target: "3 séries × 8-10 reps", sets: 3 },
-            { id: "s1_e3", name: "Dips assistés", target: "3 séries × 10-12 reps", sets: 3 },
+            { id: "s1_e3", name: "Dips assistés / Pec Fly (Alterné)", target: "3 séries × 10-12 reps", sets: 3 },
             { id: "s1_e4", name: "Élévations latérales", target: "3 séries × 12-15 reps", sets: 3 },
             { id: "s1_e5", name: "Extension triceps poulie", target: "3 séries × 12-15 reps", sets: 3 }
         ]
     },
     {
         id: 2,
-        name: "Séance 2 — Pull (Dos / Biceps)",
+        name: "Séance 2 — Lower (Hanches / Ischios / Presse)",
         exercises: [
-            { id: "s2_e1", name: "Traction ou Tirage vertical", target: "4 séries × 8-10 reps", sets: 4 },
-            { id: "s2_e2", name: "Rowing haltère / poulie", target: "3 séries × 8-10 reps", sets: 3 },
-            { id: "s2_e3", name: "Oiseau / Facepull", target: "3 séries × 12-15 reps", sets: 3 },
-            { id: "s2_e4", name: "Curl biceps incliné", target: "3 séries × 10-12 reps", sets: 3 }
+            { id: "s2_e1", name: "Presse à cuisses (Pieds hauts) / Hack Squat", target: "4 séries × 8-10 reps", sets: 4 },
+            { id: "s2_e2", name: "Leg Curl allongé / assis", target: "3 séries × 10-12 reps", sets: 3 },
+            { id: "s2_e3", name: "Extension mollets presse", target: "4 séries × 12-15 reps", sets: 4 },
+            { id: "s2_e4", name: "Enroulement de bassin (Abs)", target: "3 séries × 15 reps", sets: 3 }
         ]
     },
     {
         id: 3,
-        name: "Séance 3 — Legs (Jambes / Abs)",
+        name: "Séance 3 — Upper (Tirage / Dos / Biceps)",
         exercises: [
-            { id: "s3_e1", name: "Presse à cuisses / Squat", target: "4 séries × 8-10 reps", sets: 4 },
-            { id: "s3_e2", name: "Leg Curl (Ischios)", target: "3 séries × 10-12 reps", sets: 3 },
-            { id: "s3_e3", name: "Leg Extension", target: "3 séries × 12-15 reps", sets: 3 },
-            { id: "s3_e4", name: "Mollets / Abdominaux", target: "4 séries × 15 reps", sets: 4 }
+            { id: "s3_e1", name: "Tirage vertical poitrine", target: "4 séries × 8-10 reps", sets: 4 },
+            { id: "s3_e2", name: "Rowing neutre à la poulie", target: "3 séries × 8-10 reps", sets: 3 },
+            { id: "s3_e3", name: "Oiseau à la poulie (Arrière épaule)", target: "3 séries × 12-15 reps", sets: 3 },
+            { id: "s3_e4", name: "Curl biceps incliné", target: "3 séries × 10-12 reps", sets: 3 }
+        ]
+    },
+    {
+        id: 4,
+        name: "Séance 4 — Lower (Ischios / Fessiers / Mollets)",
+        exercises: [
+            { id: "s4_e1", name: "Soulevé de terre jambes tendues", target: "3 séries × 8-10 reps", sets: 3 },
+            { id: "s4_e2", name: "Leg Extension (Contrôlé, genou sécurisé)", target: "3 séries × 12-15 reps", sets: 3 },
+            { id: "s4_e3", name: "Mollets debout", target: "4 séries × 12-15 reps", sets: 4 },
+            { id: "s4_e4", name: "Gainage / Crunchs", target: "3 séries × max reps", sets: 3 }
         ]
     }
 ];
 
 let currentSessionIndex = 0;
+let totalSessionsDone = 0;
 let timerInterval = null;
 
-// Initialisation
 window.onload = function() {
     const savedIndex = localStorage.getItem('current_session_index');
     if (savedIndex !== null) {
         currentSessionIndex = parseInt(savedIndex);
     }
+    
+    const savedTotal = localStorage.getItem('total_sessions_completed');
+    if (savedTotal !== null) {
+        totalSessionsDone = parseInt(savedTotal);
+    }
+
+    updateDashboard();
     renderSession();
 };
+
+function updateDashboard() {
+    document.getElementById('sessionCounter').innerText = `${totalSessionsDone} / 160 Séances`;
+    const pct = Math.min((totalSessionsDone / 160) * 100, 100);
+    const bar = document.getElementById('progressBar');
+    bar.style.width = pct + '%';
+
+    const palierLbl = document.getElementById('palierLabel');
+    if (totalSessionsDone >= 120) {
+        palierLbl.innerText = "Palier : Platine 🏆";
+        bar.style.backgroundColor = "#e2e8f0";
+    } else if (totalSessionsDone >= 80) {
+        palierLbl.innerText = "Palier : Or 🥇";
+        bar.style.backgroundColor = "#eab308";
+    } else if (totalSessionsDone >= 40) {
+        palierLbl.innerText = "Palier : Argent 🥈";
+        bar.style.backgroundColor = "#94a3b8";
+    } else {
+        palierLbl.innerText = "Palier : Bronze 🥉";
+        bar.style.backgroundColor = "#3b82f6";
+    }
+}
 
 function renderSession() {
     const session = program[currentSessionIndex];
     document.getElementById('sessionTitle').innerText = session.name;
     
-    // Boutons navigation
     document.getElementById('prevBtn').disabled = (currentSessionIndex === 0);
     document.getElementById('nextBtn').disabled = (currentSessionIndex === program.length - 1);
 
@@ -255,14 +389,13 @@ function renderSession() {
         const card = document.createElement('div');
         card.className = 'exercise-card';
 
-        // Charger historique
         const historyKey = `prev_${exo.id}`;
-        const lastPerf = localStorage.getItem(historyKey) || 'Aucune donnée précédente';
+        const lastPerf = localStorage.getItem(historyKey) || 'Aucun historique';
 
         let html = `
             <div class="exercise-title">${exo.name}</div>
             <div class="exercise-target">${exo.target}</div>
-            <div class="previous-perf">Dernier coup : ${lastPerf}</div>
+            <div class="previous-perf">Dernières données : ${lastPerf}</div>
         `;
 
         for (let i = 1; i <= exo.sets; i++) {
@@ -275,9 +408,9 @@ function renderSession() {
                 <div class="set-row">
                     <span class="set-label">S${i}</span>
                     <input type="number" step="0.5" placeholder="kg" value="${savedWeight}" 
-                        onchange="saveData('${weightKey}', this.value); updateHistory('${exo.id}', ${exo.sets})">
+                        onchange="saveData('${weightKey}', this.value); checkAndSaveHistory('${exo.id}', ${exo.sets})">
                     <input type="number" placeholder="reps" value="${savedReps}" 
-                        onchange="saveData('${repsKey}', this.value); updateHistory('${exo.id}', ${exo.sets})">
+                        onchange="saveData('${repsKey}', this.value); checkAndSaveHistory('${exo.id}', ${exo.sets})">
                 </div>
             `;
         }
@@ -291,7 +424,7 @@ function saveData(key, val) {
     localStorage.setItem(key, val);
 }
 
-function updateHistory(exoId, totalSets) {
+function checkAndSaveHistory(exoId, totalSets) {
     let summary = [];
     for (let i = 1; i <= totalSets; i++) {
         const w = localStorage.getItem(`data_${exoId}_s${i}_w`);
@@ -308,6 +441,13 @@ function updateHistory(exoId, totalSets) {
 function changeSession(delta) {
     const newIndex = currentSessionIndex + delta;
     if (newIndex >= 0 && newIndex < program.length) {
+        // Incrément du compteur de séances globales si on avance
+        if (delta > 0) {
+            totalSessionsDone++;
+            localStorage.setItem('total_sessions_completed', totalSessionsDone);
+            updateDashboard();
+        }
+
         currentSessionIndex = newIndex;
         localStorage.setItem('current_session_index', currentSessionIndex);
         renderSession();
@@ -315,7 +455,7 @@ function changeSession(delta) {
     }
 }
 
-// Gestion du Chronomètre
+// Timer fixe 90s
 function startTimer(seconds) {
     clearInterval(timerInterval);
     let remaining = seconds;
@@ -332,36 +472,12 @@ function startTimer(seconds) {
         remaining--;
         if (remaining < 0) {
             clearInterval(timerInterval);
-            display.innerText = "FIN !";
-            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            display.innerText = "PARTI !";
+            if (navigator.vibrate) navigator.vibrate([300, 150, 300]);
         } else {
             updateDisplay();
         }
     }, 1000);
-}
-
-// Outils
-function exportData() {
-    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localStorage));
-    let downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "carnet_muscu_backup.json");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-}
-
-function resetCurrentSession() {
-    if (confirm("Réinitialiser les cases de cette séance ?")) {
-        const session = program[currentSessionIndex];
-        session.exercises.forEach(exo => {
-            for (let i = 1; i <= exo.sets; i++) {
-                localStorage.removeItem(`data_${exo.id}_s${i}_w`);
-                localStorage.removeItem(`data_${exo.id}_s${i}_r`);
-            }
-        });
-        renderSession();
-    }
 }
 </script>
 </body>
