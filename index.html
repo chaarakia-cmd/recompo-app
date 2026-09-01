@@ -1,629 +1,1286 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Suivi Recomposition — Thème Rouge</title>
-    <style>
-        :root {
-            --bg-color: #090a0f;
-            --card-bg: rgba(22, 24, 34, 0.75);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --accent-red: #ff3b30;
-            --accent-red-hover: #ff453a;
-            --accent-gold: #ffd60a;
-            --text-main: #f2f2f7;
-            --text-sub: #8e8e93;
-            --radius: 16px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14161b">
+<title>Ton suivi · Basic Fit</title>
 
-        * {
-            box-sizing: border-box;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        body {
-            background-color: var(--bg-color);
-            background-image: radial-gradient(circle at 50% 0%, #1c0d11 0%, #090a0f 75%);
-            color: var(--text-main);
-            margin: 0;
-            padding: 16px;
-            padding-bottom: 110px;
-            min-height: 100vh;
-        }
+<style>
+:root{
+  --bg:#14161b;
+  --card:#1d2028;
+  --card-edge:#2b2f38;
+  --ink:#f1f0ec;
+  --ink-dim:#8b93a0;
+  --accent:#e5522f;
+  --accent-soft:rgba(229,82,47,.14);
+  --amber:#e2a23b;
+  --teal:#5aa89b;
+  --font-display:'Oswald',sans-serif;
+  --font-body:'Inter',sans-serif;
+}
 
-        .app-header {
-            text-align: center;
-            padding: 10px 0 20px 0;
-        }
+*{
+  box-sizing:border-box;
+}
 
-        .app-header h1 {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 0;
-            background: linear-gradient(135deg, #ffffff 0%, var(--accent-red) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+html,body{
+  margin:0;
+  min-height:100%;
+}
 
-        .tab-content {
-            display: none;
-        }
+body{
+  background:
+    radial-gradient(
+      1200px 500px at 50% -10%,
+      rgba(229,82,47,.10),
+      transparent 60%
+    ),
+    var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
 
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.25s ease-in-out;
-        }
+button,
+input,
+select{
+  font-family:inherit;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+button{
+  cursor:pointer;
+}
 
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-        }
+#app{
+  max-width:460px;
+  margin:0 auto;
+  padding-bottom:90px;
+  min-height:100vh;
+}
 
-        .card-title {
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-sub);
-            margin-bottom: 12px;
-        }
+/* ================= HEADER ================= */
 
-        .macros-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            text-align: center;
-        }
+header.top{
+  padding:24px 20px 4px;
+}
 
-        .macro-item {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 10px 4px;
-        }
+header.top .eyebrow{
+  color:var(--accent);
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:11.5px;
+  letter-spacing:.06em;
+  margin:0 0 2px;
+}
 
-        .macro-val {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--accent-red);
-        }
+header.top h1{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:24px;
+  margin:0;
+  line-height:1.08;
+}
 
-        .macro-lbl {
-            font-size: 10px;
-            color: var(--text-sub);
-            margin-top: 2px;
-        }
+header.top .sub{
+  color:var(--ink-dim);
+  font-size:12px;
+  margin-top:4px;
+}
 
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
+/* ================= SECTIONS ================= */
 
-        .progress-bar-bg {
-            background: rgba(255, 255, 255, 0.1);
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-        }
+section{
+  display:none;
+  padding:2px 20px 8px;
+}
 
-        .progress-bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #990000, var(--accent-red));
-            border-radius: 5px;
-            transition: width 0.4s ease;
-        }
+section.active{
+  display:block;
+}
 
-        .session-nav-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            gap: 10px;
-        }
+/* ================= HOME ================= */
 
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-        }
+.hero{
+  margin:14px 20px 16px;
+  background:linear-gradient(165deg,#21252d 0%,#1a1d24 100%);
+  border:1px solid var(--card-edge);
+  border-radius:16px;
+  padding:18px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
 
-        .nav-btn:active {
-            background: rgba(255, 255, 255, 0.18);
-        }
+.ring-wrap{
+  position:relative;
+  width:96px;
+  height:96px;
+  flex:0 0 auto;
+}
 
-        .nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
+.ring-wrap svg{
+  transform:rotate(-90deg);
+}
 
-        .session-name {
-            font-size: 15px;
-            font-weight: 700;
-            text-align: center;
-            flex-grow: 1;
-            color: #fff;
-        }
+.ring-center{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
 
-        .exercise-title {
-            font-size: 17px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 4px;
-        }
+.ring-center .n{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:24px;
+}
 
-        .exercise-target {
-            font-size: 12px;
-            color: var(--accent-red);
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
+.ring-center .l{
+  font-size:9px;
+  color:var(--ink-dim);
+}
 
-        .prev-data {
-            background: rgba(255, 214, 10, 0.08);
-            border: 1px dashed rgba(255, 214, 10, 0.25);
-            color: var(--accent-gold);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            margin-bottom: 12px;
-        }
+.hero-info{
+  flex:1;
+  min-width:0;
+}
 
-        .set-row {
-            display: grid;
-            grid-template-columns: 40px 1fr 1fr;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 8px;
-        }
+.hero-info .milestone-label{
+  font-family:var(--font-display);
+  font-size:12px;
+  font-weight:600;
+  color:var(--accent);
+  margin-bottom:3px;
+}
 
-        .set-tag {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-sub);
-        }
+.hero-info .milestone-sub{
+  font-size:11px;
+  color:var(--ink-dim);
+  line-height:1.4;
+}
 
-        input {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--card-border);
-            color: #fff;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 16px;
-            text-align: center;
-            font-weight: 600;
-            width: 100%;
-        }
+.days-row{
+  display:flex;
+  margin:0 20px 14px;
+  gap:9px;
+}
 
-        input:focus {
-            outline: none;
-            border-color: var(--accent-red);
-            box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.3);
-        }
+.days-box{
+  flex:1;
+  background:var(--card);
+  border:1px solid var(--card-edge);
+  border-radius:12px;
+  padding:11px 12px;
+}
 
-        /* Timer Flottant Rouge & Dynamic */
-        .floating-timer {
-            position: fixed;
-            bottom: 75px;
-            left: 16px;
-            right: 16px;
-            background: rgba(22, 24, 34, 0.95);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 59, 48, 0.3);
-            border-radius: 14px;
-            padding: 10px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-            z-index: 99;
-        }
+.days-box .n{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:19px;
+}
 
-        .timer-info {
-            display: flex;
-            flex-direction: column;
-        }
+.days-box .l{
+  font-size:10px;
+  color:var(--ink-dim);
+  margin-top:1px;
+}
 
-        .phase-label {
-            font-size: 11px;
-            color: var(--accent-red);
-            font-weight: 600;
-        }
+/* ================= CARDS ================= */
 
-        .timer-val {
-            font-size: 20px;
-            font-weight: 700;
-            font-family: SFMono-Regular, Menlos, monospace;
-        }
+.card{
+  background:var(--card);
+  border:1px solid var(--card-edge);
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:13px;
+}
 
-        .timer-start-btn {
-            background: var(--accent-red);
-            color: #fff;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-        }
+.card h2{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:16px;
+  margin:0 0 4px;
+}
 
-        .timer-start-btn:active {
-            background: var(--accent-red-hover);
-        }
+.card h3{
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:13px;
+  margin:14px 0 7px;
+  color:var(--amber);
+}
 
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 65px;
-            background: rgba(12, 13, 18, 0.94);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 100;
-        }
+.card p{
+  margin:4px 0;
+  font-size:13px;
+  line-height:1.5;
+  color:var(--ink-dim);
+}
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-sub);
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 4px;
-        }
+.pill{
+  display:inline-block;
+  background:var(--accent-soft);
+  color:var(--accent);
+  font-size:11px;
+  font-weight:600;
+  padding:4px 10px;
+  border-radius:20px;
+  margin-bottom:9px;
+  font-family:var(--font-display);
+}
 
-        .nav-item.active {
-            color: var(--accent-red);
-        }
+/* ================= PROGRAMME ================= */
 
-        .nav-icon {
-            font-size: 18px;
-            margin-bottom: 3px;
-        }
-    </style>
+.ex-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  padding:9px 0;
+  border-bottom:1px solid var(--card-edge);
+  font-size:13px;
+  gap:8px;
+}
+
+.ex-row:last-child{
+  border-bottom:none;
+}
+
+.ex-name{
+  font-weight:500;
+}
+
+.ex-meta{
+  color:var(--ink-dim);
+  font-size:11.5px;
+  text-align:right;
+  white-space:nowrap;
+}
+
+.ex-alt{
+  display:block;
+  font-size:10.5px;
+  color:var(--ink-dim);
+  font-style:italic;
+  margin-top:2px;
+}
+
+/* ================= FORM ================= */
+
+select,
+input{
+  width:100%;
+  background:#12141a;
+  border:1px solid var(--card-edge);
+  color:var(--ink);
+  padding:10px 12px;
+  border-radius:10px;
+  font-size:13.5px;
+  margin-bottom:9px;
+}
+
+select{
+  appearance:none;
+  background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b93a0' stroke-width='2'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat:no-repeat;
+  background-position:right 12px center;
+  background-size:15px;
+}
+
+label{
+  font-size:11.5px;
+  color:var(--ink-dim);
+  display:block;
+  margin-bottom:5px;
+  font-weight:500;
+}
+
+/* ================= LOG ================= */
+
+.log-ex{
+  display:flex;
+  gap:7px;
+  align-items:center;
+  margin-bottom:8px;
+}
+
+.log-ex span{
+  flex:1;
+  font-size:12.5px;
+}
+
+.log-ex input{
+  width:65px;
+  margin-bottom:0;
+  text-align:center;
+  padding:8px 3px;
+}
+
+.timer-btn{
+  flex:0 0 auto;
+  width:34px;
+  height:34px;
+  border-radius:9px;
+  background:#12141a;
+  border:1px solid var(--card-edge);
+  color:var(--teal);
+  font-size:15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ================= BUTTONS ================= */
+
+button.primary{
+  width:100%;
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  padding:13px;
+  border-radius:11px;
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:14.5px;
+  letter-spacing:.02em;
+  margin-top:5px;
+  box-shadow:0 6px 16px rgba(229,82,47,.25);
+}
+
+button.primary:active{
+  opacity:.88;
+}
+
+button.secondary{
+  width:100%;
+  background:#12141a;
+  color:var(--ink);
+  border:1px solid var(--card-edge);
+  padding:12px;
+  border-radius:11px;
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:13.5px;
+  margin-top:5px;
+}
+
+/* ================= HISTORY ================= */
+
+.hist-item{
+  display:flex;
+  justify-content:space-between;
+  font-size:12.5px;
+  padding:7px 0;
+  border-bottom:1px solid var(--card-edge);
+}
+
+.hist-item:last-child{
+  border-bottom:none;
+}
+
+.hist-date{
+  color:var(--ink-dim);
+}
+
+.trend-up{
+  color:var(--teal);
+  font-weight:600;
+}
+
+.trend-flat{
+  color:var(--ink-dim);
+}
+
+/* ================= NUTRITION ================= */
+
+.macro-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:9px;
+  margin-top:11px;
+}
+
+.macro-box{
+  background:#12141a;
+  border-radius:11px;
+  padding:11px 5px;
+  text-align:center;
+}
+
+.macro-box .n{
+  font-family:var(--font-display);
+  font-size:18px;
+  font-weight:600;
+  color:var(--teal);
+}
+
+.macro-box .l{
+  font-size:10px;
+  color:var(--ink-dim);
+  margin-top:1px;
+}
+
+/* ================= PROGRESS ================= */
+
+.subtabs{
+  display:flex;
+  gap:6px;
+  margin-bottom:13px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+
+.subtabs::-webkit-scrollbar{
+  display:none;
+}
+
+.subtabs button{
+  flex:0 0 auto;
+  background:var(--card);
+  border:1px solid var(--card-edge);
+  color:var(--ink-dim);
+  font-family:var(--font-display);
+  font-size:11.5px;
+  font-weight:500;
+  padding:8px 13px;
+  border-radius:20px;
+}
+
+.subtabs button.active{
+  background:var(--accent);
+  color:#fff;
+  border-color:var(--accent);
+}
+
+.subpanel{
+  display:none;
+}
+
+.subpanel.active{
+  display:block;
+}
+
+/* ================= CALENDAR ================= */
+
+.week-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:7px 0;
+  border-bottom:1px solid var(--card-edge);
+}
+
+.week-row:last-child{
+  border-bottom:none;
+}
+
+.week-label{
+  width:78px;
+  font-size:11px;
+  color:var(--ink-dim);
+  flex:0 0 auto;
+}
+
+.week-dots{
+  display:flex;
+  gap:6px;
+}
+
+.dot{
+  width:20px;
+  height:20px;
+  border-radius:6px;
+  background:#12141a;
+  border:1px solid var(--card-edge);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:8.5px;
+  color:var(--ink-dim);
+}
+
+.dot.done{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+}
+
+.dot.today{
+  box-shadow:0 0 0 2px var(--amber);
+}
+
+/* ================= BADGES ================= */
+
+.badge-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.badge{
+  background:#12141a;
+  border:1px solid var(--card-edge);
+  border-radius:12px;
+  padding:12px;
+  text-align:center;
+  opacity:.35;
+}
+
+.badge.unlocked{
+  opacity:1;
+  border-color:var(--amber);
+  background:rgba(226,162,59,.08);
+}
+
+.badge .ic{
+  font-size:22px;
+  margin-bottom:5px;
+}
+
+.badge .t{
+  font-family:var(--font-display);
+  font-size:11.5px;
+  font-weight:600;
+}
+
+.badge .d{
+  font-size:9.5px;
+  color:var(--ink-dim);
+  margin-top:2px;
+  line-height:1.3;
+}
+
+/* ================= RECORDS ================= */
+
+.pr-item{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 0;
+  border-bottom:1px solid var(--card-edge);
+  font-size:12.5px;
+}
+
+.pr-item:last-child{
+  border-bottom:none;
+}
+
+.pr-w{
+  font-family:var(--font-display);
+  font-weight:600;
+  color:var(--amber);
+}
+
+/* ================= PHOTOS ================= */
+
+.photo-strip{
+  display:flex;
+  gap:9px;
+  overflow-x:auto;
+  padding-bottom:4px;
+}
+
+.photo-thumb{
+  flex:0 0 auto;
+  width:78px;
+  text-align:center;
+}
+
+.photo-thumb img{
+  width:78px;
+  height:104px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid var(--card-edge);
+}
+
+.photo-thumb .dl{
+  font-size:9.5px;
+  color:var(--ink-dim);
+  margin-top:4px;
+}
+
+.compare-row{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.compare-col{
+  flex:1;
+  text-align:center;
+}
+
+.compare-col img{
+  width:100%;
+  border-radius:12px;
+  border:1px solid var(--card-edge);
+}
+
+.compare-col small{
+  color:var(--ink-dim);
+  font-size:9px;
+}
+
+/* ================= EMPTY ================= */
+
+.empty{
+  color:var(--ink-dim);
+  font-size:12.5px;
+  font-style:italic;
+  padding:6px 0;
+}
+
+/* ================= NAV ================= */
+
+nav.tabbar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  max-width:460px;
+  margin:0 auto;
+  background:rgba(24,27,33,.94);
+  backdrop-filter:blur(10px);
+  border-top:1px solid var(--card-edge);
+  display:flex;
+  padding-bottom:env(safe-area-inset-bottom);
+  z-index:20;
+}
+
+nav.tabbar button{
+  flex:1;
+  background:none;
+  border:none;
+  color:var(--ink-dim);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+  font-family:var(--font-display);
+  font-size:9.5px;
+  font-weight:500;
+  padding:10px 0 8px;
+}
+
+nav.tabbar button svg{
+  width:19px;
+  height:19px;
+  stroke:var(--ink-dim);
+}
+
+nav.tabbar button.active{
+  color:var(--accent);
+}
+
+nav.tabbar button.active svg{
+  stroke:var(--accent);
+}
+
+/* ================= TIMER ================= */
+
+#timerOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(10,11,14,.94);
+  backdrop-filter:blur(6px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:50;
+}
+
+#timerOverlay.show{
+  display:flex;
+}
+
+#timerNum{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:64px;
+  color:var(--accent);
+}
+
+#timerLabel{
+  color:var(--ink-dim);
+  font-size:13px;
+  margin-bottom:20px;
+  text-align:center;
+  max-width:300px;
+}
+
+.timer-controls{
+  display:flex;
+  gap:8px;
+  margin-top:22px;
+}
+
+.timer-controls button{
+  background:var(--card);
+  border:1px solid var(--card-edge);
+  color:var(--ink);
+  padding:11px 13px;
+  border-radius:12px;
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:12px;
+}
+
+.timer-controls button.stop{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+}
+
+/* ================= TOAST ================= */
+
+.toast{
+  position:fixed;
+  top:18px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--amber);
+  color:#1a1400;
+  padding:10px 18px;
+  border-radius:20px;
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:12.5px;
+  z-index:60;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .3s,top .3s;
+}
+
+.toast.show{
+  opacity:1;
+  top:30px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:360px){
+  .hero{
+    gap:10px;
+    padding:14px;
+  }
+
+  .ring-wrap{
+    width:82px;
+    height:82px;
+  }
+
+  .ring-wrap svg{
+    width:82px;
+    height:82px;
+  }
+
+  .week-label{
+    width:65px;
+  }
+
+  .dot{
+    width:18px;
+    height:18px;
+  }
+}
+</style>
 </head>
+
 <body>
 
-    <div class="app-header">
-        <h1>RECOMPOSITION CORPORALLE</h1>
+<div id="app">
+
+<header class="top">
+  <p class="eyebrow">RECOMPOSITION · BASIC FIT</p>
+  <h1>Ton suivi</h1>
+  <p class="sub" id="dateNow">—</p>
+</header>
+
+
+<!-- ================= ACCUEIL ================= -->
+
+<section id="tab-home" class="active">
+
+  <div class="hero">
+
+    <div class="ring-wrap">
+
+      <svg width="96" height="96" viewBox="0 0 104 104">
+
+        <circle
+          cx="52"
+          cy="52"
+          r="45"
+          fill="none"
+          stroke="#2b2f38"
+          stroke-width="9"
+        />
+
+        <circle
+          id="ringProgress"
+          cx="52"
+          cy="52"
+          r="45"
+          fill="none"
+          stroke="#e5522f"
+          stroke-width="9"
+          stroke-linecap="round"
+          stroke-dasharray="283"
+          stroke-dashoffset="283"
+        />
+
+      </svg>
+
+      <div class="ring-center">
+        <div class="n" id="sessionCount">0</div>
+        <div class="l">séances</div>
+      </div>
+
     </div>
 
-    <!-- SÉANCES -->
-    <div id="tab-workout" class="tab-content active">
-        <div class="session-nav-bar">
-            <button class="nav-btn" id="prevBtn" onclick="changeSession(-1)">‹ Séance préc.</button>
-            <div class="session-name" id="sessionTitle">Séance 1</div>
-            <button class="nav-btn" id="nextBtn" onclick="changeSession(1)">Séance suiv. ›</button>
-        </div>
+    <div class="hero-info">
 
-        <div id="workoutContainer"></div>
+      <div
+        class="milestone-label"
+        id="milestoneLabel">
+        —
+      </div>
+
+      <div
+        class="milestone-sub"
+        id="milestoneSub">
+        —
+      </div>
+
     </div>
 
-    <!-- NUTRITION -->
-    <div id="tab-nutrition" class="tab-content">
-        <div class="glass-card">
-            <div class="card-title">Objectifs Nutritionnels PDF</div>
-            <div class="macros-grid">
-                <div class="macro-item">
-                    <div class="macro-val">~2700</div>
-                    <div class="macro-lbl">kcal</div>
-                </div>
-                <div class="macro-item">
-                    <div class="macro-val">180g</div>
-                    <div class="macro-lbl">Protéines</div>
-                </div>
-                <div class="macro-item">
-                    <div class="macro-val">310g</div>
-                    <div class="macro-lbl">Glucides</div>
-                </div>
-                <div class="macro-item">
-                    <div class="macro-val">80g</div>
-                    <div class="macro-lbl">Lipides</div>
-                </div>
-            </div>
-        </div>
+  </div>
 
-        <div class="glass-card">
-            <div class="card-title">Règles d'hydratation &amp; Suppléments</div>
-            <p style="font-size: 13px; color: var(--text-sub); line-height: 1.5; margin: 0;">
-                • Eau : Minimum 2,5L à 3L par jour.<br>
-                • Créatine : 5g par jour avec un repas.<br>
-                • Post-Workout : 30g à 40g de protéines rapides après la séance.
-            </p>
-        </div>
+
+  <div class="days-row">
+
+    <div class="days-box">
+      <div class="n" id="weekNum">S1</div>
+      <div class="l" id="weekDates">—</div>
     </div>
 
-    <!-- PROGRESSION & PALIERS -->
-    <div id="tab-progress" class="tab-content">
-        <div class="glass-card">
-            <div class="card-title">Progression Annuelle (160 Séances)</div>
-            <div class="progress-header">
-                <span id="palierLabel">Palier : Bronze 🥉</span>
-                <span id="sessionCounter">0 / 160</span>
-            </div>
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="progressBar"></div>
-            </div>
-        </div>
-
-        <div class="glass-card">
-            <div class="card-title">Périodisation des Temps de Repos</div>
-            <p style="font-size: 13px; color: var(--text-sub); line-height: 1.6; margin: 0;">
-                • <b>Phase 1 (Séances 1-50) :</b> Hypertrophie (90s)<br>
-                • <b>Phase 2 (Séances 51-110) :</b> Force Maximale (120s)<br>
-                • <b>Phase 3 (Séances 111-160) :</b> Densité / Affûtage (60s)
-            </p>
-        </div>
+    <div class="days-box">
+      <div class="n" id="phaseShort">—</div>
+      <div class="l">phase actuelle</div>
     </div>
 
-    <!-- TIMER DYNAMIQUE ROUGE -->
-    <div class="floating-timer">
-        <div class="timer-info">
-            <span class="phase-label" id="timerPhaseLabel">Phase 1 : Hypertrophie (90s)</span>
-            <span class="timer-val" id="timerDisplay">01:30</span>
-        </div>
-        <button class="timer-start-btn" id="timerStartBtn" onclick="triggerTimer()">Lancer Timer</button>
+  </div>
+
+
+  <div class="card">
+
+    <span class="pill" id="phasePill">—</span>
+
+    <p id="phaseNote"></p>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>Séance du jour</h2>
+
+    <p id="todaySession">—</p>
+
+    <button
+      class="primary"
+      onclick="goLog()">
+      Logger cette séance
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- ================= PROGRAMME ================= -->
+
+<section id="tab-program">
+
+  <div class="card">
+
+    <h2>Split — 4 séances/semaine</h2>
+
+    <p>
+      Chaque groupe est travaillé régulièrement.
+      Alterne les variantes indiquées une semaine sur deux.
+    </p>
+
+  </div>
+
+  <div id="programDays"></div>
+
+</section>
+
+
+<!-- ================= SUIVI ================= -->
+
+<section id="tab-log">
+
+  <div class="card">
+
+    <h2>Logger une séance</h2>
+
+    <label>Jour</label>
+
+    <select
+      id="logDaySelect"
+      onchange="renderLogForm()">
+    </select>
+
+    <div id="logForm"></div>
+
+    <button
+      class="primary"
+      onclick="saveLog()">
+      Enregistrer la séance
+    </button>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>Historique par exercice</h2>
+
+    <label>Exercice</label>
+
+    <select
+      id="histExSelect"
+      onchange="renderHistory()">
+    </select>
+
+    <div id="histList"></div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= PROGRES ================= -->
+
+<section id="tab-progress">
+
+  <div class="subtabs">
+
+    <button
+      class="active"
+      data-sub="calendar"
+      onclick="switchSub('calendar')">
+      Calendrier
+    </button>
+
+    <button
+      data-sub="badges"
+      onclick="switchSub('badges')">
+      Badges
+    </button>
+
+    <button
+      data-sub="pr"
+      onclick="switchSub('pr')">
+      Records
+    </button>
+
+    <button
+      data-sub="photos"
+      onclick="switchSub('photos')">
+      Photos
+    </button>
+
+  </div>
+
+
+  <!-- CALENDRIER -->
+
+  <div
+    class="subpanel active"
+    id="sub-calendar">
+
+    <div class="card">
+
+      <h2>Série en cours</h2>
+
+      <p id="streakText">—</p>
+
     </div>
 
-    <!-- BOTTOM BAR -->
-    <div class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab('workout', this)">
-            <span class="nav-icon">🏋️‍♂️</span>
-            <span>Séance</span>
-        </button>
-        <button class="nav-item" onclick="switchTab('nutrition', this)">
-            <span class="nav-icon">🥗</span>
-            <span>Nutrition</span>
-        </button>
-        <button class="nav-item" onclick="switchTab('progress', this)">
-            <span class="nav-icon">📈</span>
-            <span>Paliers</span>
-        </button>
+
+    <div class="card">
+
+      <h2>Semaine par semaine</h2>
+
+      <p style="margin-bottom:8px">
+        J1 · J2 · J3 · J4
+      </p>
+
+      <div id="weekGrid"></div>
+
     </div>
 
-<script>
-// Programme strict basé sur ton PDF (avec distinction 3 et 4 séries selon l'exercice)
-const program = [
-    {
-        id: 1,
-        name: "Séance 1 — Upper (Push)",
-        exercises: [
-            { id: "s1_e1", name: "Développé couché barre", target: "3 séries × 6-10 reps", sets: 3 },
-            { id: "s1_e2", name: "Développé militaire haltères", target: "3 séries × 8-10 reps", sets: 3 },
-            { id: "s1_e3", name: "Dips assistés / Pec Fly", target: "3 séries × 10-12 reps", sets: 3 },
-            { id: "s1_e4", name: "Élévations latérales", target: "3 séries × 12-15 reps", sets: 3 },
-            { id: "s1_e5", name: "Extension triceps poulie", target: "3 séries × 12-15 reps", sets: 3 }
-        ]
-    },
-    {
-        id: 2,
-        name: "Séance 2 — Lower (Hanches / Ischios)",
-        exercises: [
-            { id: "s2_e1", name: "Presse à cuisses / Hack Squat", target: "4 séries × 8-10 reps", sets: 4 },
-            { id: "s2_e2", name: "Leg Curl allongé", target: "3 séries × 10-12 reps", sets: 3 },
-            { id: "s2_e3", name: "Extension mollets presse", target: "4 séries × 12-15 reps", sets: 4 },
-            { id: "s2_e4", name: "Enroulement de bassin", target: "3 séries × 15 reps", sets: 3 }
-        ]
-    },
-    {
-        id: 3,
-        name: "Séance 3 — Upper (Pull)",
-        exercises: [
-            { id: "s3_e1", name: "Tirage vertical poitrine", target: "4 séries × 8-10 reps", sets: 4 },
-            { id: "s3_e2", name: "Rowing neutre à la poulie", target: "3 séries × 8-10 reps", sets: 3 },
-            { id: "s3_e3", name: "Oiseau à la poulie", target: "3 séries × 12-15 reps", sets: 3 },
-            { id: "s3_e4", name: "Curl biceps incliné", target: "3 séries × 10-12 reps", sets: 3 }
-        ]
-    },
-    {
-        id: 4,
-        name: "Séance 4 — Lower (Ischios / Fessiers)",
-        exercises: [
-            { id: "s4_e1", name: "Soulevé de terre jambes tendues", target: "3 séries × 8-10 reps", sets: 3 },
-            { id: "s4_e2", name: "Leg Extension (sécurisé)", target: "3 séries × 12-15 reps", sets: 3 },
-            { id: "s4_e3", name: "Mollets debout", target: "4 séries × 12-15 reps", sets: 4 },
-            { id: "s4_e4", name: "Gainage / Crunchs", target: "3 séries × max reps", sets: 3 }
-        ]
-    }
-];
+  </div>
 
-let currentSessionIndex = 0;
-let totalSessionsDone = 0;
-let timerInterval = null;
-let currentTimerSeconds = 90;
 
-window.onload = function() {
-    const savedIndex = localStorage.getItem('current_session_index');
-    if (savedIndex !== null) currentSessionIndex = parseInt(savedIndex);
+  <!-- BADGES -->
 
-    const savedTotal = localStorage.getItem('total_sessions_completed');
-    if (savedTotal !== null) totalSessionsDone = parseInt(savedTotal);
+  <div
+    class="subpanel"
+    id="sub-badges">
 
-    updateProgressUI();
-    updateTimerPhase();
-    renderSession();
-};
+    <div class="card">
 
-function switchTab(tabId, btnEl) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      <h2>Succès</h2>
 
-    document.getElementById(`tab-${tabId}`).classList.add('active');
-    btnEl.classList.add('active');
-}
+      <div
+        class="badge-grid"
+        id="badgeGrid">
+      </div>
 
-function renderSession() {
-    const session = program[currentSessionIndex];
-    document.getElementById('sessionTitle').innerText = session.name;
-    
-    document.getElementById('prevBtn').disabled = (currentSessionIndex === 0);
-    document.getElementById('nextBtn').disabled = (currentSessionIndex === program.length - 1);
+    </div>
 
-    const container = document.getElementById('workoutContainer');
-    container.innerHTML = '';
+  </div>
 
-    session.exercises.forEach(exo => {
-        const card = document.createElement('div');
-        card.className = 'glass-card';
 
-        const lastPerf = localStorage.getItem(`prev_${exo.id}`) || 'Aucun historique';
+  <!-- RECORDS -->
 
-        let html = `
-            <div class="exercise-title">${exo.name}</div>
-            <div class="exercise-target">${exo.target}</div>
-            <div class="prev-data">Dernier passage : ${lastPerf}</div>
-        `;
+  <div
+    class="subpanel"
+    id="sub-pr">
 
-        // Génération stricte du nombre de séries du PDF (ex: 4 lignes si sets: 4)
-        for (let i = 1; i <= exo.sets; i++) {
-            const weightKey = `data_${exo.id}_s${i}_w`;
-            const repsKey = `data_${exo.id}_s${i}_r`;
-            const savedW = localStorage.getItem(weightKey) || '';
-            const savedR = localStorage.getItem(repsKey) || '';
+    <div class="card">
 
-            html += `
-                <div class="set-row">
-                    <span class="set-tag">S${i}</span>
-                    <input type="number" step="0.5" placeholder="kg" value="${savedW}" 
-                        oninput="saveVal('${weightKey}', this.value); syncPerfHistory('${exo.id}', ${exo.sets})">
-                    <input type="number" placeholder="reps" value="${savedR}" 
-                        oninput="saveVal('${repsKey}', this.value); syncPerfHistory('${exo.id}', ${exo.sets})">
-                </div>
-            `;
-        }
+      <h2>Records personnels</h2>
 
-        card.innerHTML = html;
-        container.appendChild(card);
-    });
-}
+      <div id="prList"></div>
 
-function saveVal(key, val) {
-    localStorage.setItem(key, val);
-}
+    </div>
 
-function syncPerfHistory(exoId, totalSets) {
-    let summary = [];
-    for (let i = 1; i <= totalSets; i++) {
-        const w = localStorage.getItem(`data_${exoId}_s${i}_w`);
-        const r = localStorage.getItem(`data_${exoId}_s${i}_r`);
-        if (w || r) {
-            summary.push(`S${i}: ${w || 0}kg×${r || 0}`);
-        }
-    }
-    if (summary.length > 0) {
-        localStorage.setItem(`prev_${exoId}`, summary.join(' | '));
-    }
-}
+  </div>
 
-function changeSession(delta) {
-    const newIndex = currentSessionIndex + delta;
-    if (newIndex >= 0 && newIndex < program.length) {
-        if (delta > 0) {
-            totalSessionsDone++;
-            localStorage.setItem('total_sessions_completed', totalSessionsDone);
-            updateProgressUI();
-            updateTimerPhase();
-        }
-        currentSessionIndex = newIndex;
-        localStorage.setItem('current_session_index', currentSessionIndex);
-        renderSession();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-}
 
-function updateProgressUI() {
-    document.getElementById('sessionCounter').innerText = `${totalSessionsDone} / 160`;
-    const pct = Math.min((totalSessionsDone / 160) * 100, 100);
-    const bar = document.getElementById('progressBar');
-    bar.style.width = pct + '%';
+  <!-- PHOTOS -->
 
-    const label = document.getElementById('palierLabel');
-    if (totalSessionsDone >= 120) {
-        label.innerText = "Palier : Platine 🏆";
-    } else if (totalSessionsDone >= 80) {
-        label.innerText = "Palier : Or 🥇";
-    } else if (totalSessionsDone >= 40) {
-        label.innerText = "Palier : Argent 🥈";
-    } else {
-        label.innerText = "Palier : Bronze 🥉";
-    }
-}
+  <div
+    class="subpanel"
+    id="sub-photos">
 
-function updateTimerPhase() {
-    const phaseLabel = document.getElementById('timerPhaseLabel');
-    if (totalSessionsDone >= 110) {
-        currentTimerSeconds = 60;
-        phaseLabel.innerText = "Phase 3 : Affûtage (60s)";
-    } else if (totalSessionsDone >= 50) {
-        currentTimerSeconds = 120;
-        phaseLabel.innerText = "Phase 2 : Force (120s)";
-    } else {
-        currentTimerSeconds = 90;
-        phaseLabel.innerText = "Phase 1 : Hypertrophie (90s)";
-    }
-    resetTimerDisplay();
-}
+    <div class="card">
 
-function resetTimerDisplay() {
-    const m = Math.floor(currentTimerSeconds / 60).toString().padStart(2, '0');
-    const s = (currentTimerSeconds % 60).toString().padStart(2, '0');
-    document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-}
+      <h2>Ajouter une photo</h2>
 
-function triggerTimer() {
-    clearInterval(timerInterval);
-    let remaining = currentTimerSeconds;
-    const display = document.getElementById('timerDisplay');
-    
-    function updateDisplay() {
-        const m = Math.floor(remaining / 60).toString().padStart(2, '0');
-        const s = (remaining % 60).toString().padStart(2, '0');
-        display.innerText = `${m}:${s}`;
-    }
+      <input
+        type="file"
+        accept="image/*"
+        id="photoInput"
+        onchange="addPhoto(event)">
 
-    updateDisplay();
-    timerInterval = setInterval(() => {
-        remaining--;
-        if (remaining < 0) {
-            clearInterval(timerInterval);
-            display.innerText = "FIN !";
-            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-        } else {
-            updateDisplay();
-        }
-    }, 1000);
-}
-</script>
-</body>
-</html>
+      <p>
+        Les photos restent dans le stockage local
+        de ton navigateur.
+      </p>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Chronologie</h2>
+
+      <div
+        class="photo-strip"
+        id="photoStrip">
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Comparer avant / après</h2>
+
+      <label>Photo A</label>
+
+      <select
+        id="photoASelect"
+        onchange="renderCompare()">
+      </select>
+
+      <label>Photo B</label>
+
+      <select
+        id="photoBSelect"
+        onchange="renderCompare()">
+      </select>
+
+      <div
+        class="compare-row"
+        id="compareRow">
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= NUTRITION ================= -->
+
+<section id="tab-nutrition">
+
+  <div class="card">
+
+    <h2>Cibles journalières</h2>
+
+    <div class="macro-grid">
+
+      <div class="macro-box">
+        <div class="n">2700</div>
+        <div class="l">kcal</div>
+      </div>
+
+      <div class="macro-box">
+        <div class="n">180g</div>
+        <div class="l">protéines</div>
+      </div>
+
+      <div class="macro-box">
+        <div class="n">80g</div>
+        <div class="l">lipides</div>
+      </div>
+
+    </div>
+
+    <p style="margin-top:10px">
+      ≈310g de glucides pour compléter.
+    </p>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>Structure de la journée</h2>
+
+    <h3>Matin</h3>
+    <p>
+      Rien — bien t'hydrater dès le réveil.
+    </p>
+
+    <h3>Midi · supermarché</h3>
+    <p>
+      Repas clé, viser 40g+ de protéines :
+      poulet/dinde cuits, œufs durs, skyr,
+      jambon blanc + pain ou plats préparés
+      riches en protéines.
+    </p>
+
+    <h3>Goûter · si faim</h3>
+    <p>
+      Yaourt protéiné, barre protéinée, fruit.
+    </p>
+
+    <h3>Soir · repas maison</h3>
+    <p>
+      Priorité à la partie protéines de l'assiette.
+    </p>
+
+    <h3>Weekend</h3>
+    <p>
+      Le goûter sucré reste permis.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- ================= NAVIGATION ================= -->
+
+<nav class="tabbar">
+
+  <button
+    data-tab="home"
+    onclick="switchTab('home')"
+    class="active">
+
+    <svg
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round">
+
+      <path d="M3 11l9-8 9 8M5 10v10h14V10"/>
+
+    </svg>
+
+    Accueil
+
+  </button>
+
+
+  <button
+    data-tab="program"
+    onclick="switchTab('program')">
+
+    <svg
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round">
+
+      <path d="M6 5v14M18 5v14M2 9h4M2 15h4M18 9h4M18 15h4M6 12h12"/>
+
+    </svg>
+
+    Programme
+
+  </button>
+
+
+  <button
+    data-tab="log"
+    onclick="switchTab('log')">
+
+    <svg
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round">
+
+      <path d="M3 3v18h18M8 17V10M13 17V6M18 17v-4"/>
+
+    </svg>
+
+    Suivi
+
+  </button>
+
+
+  <button
+    data-tab="progress"
+    onclick="switchTab('progress')">
+
+    <svg
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round">
+
+      <pa
