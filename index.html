@@ -1,3 +1,170 @@
+  <script>
+    const program = [
+      {
+        dayNum: 1,
+        title: "Jour 1 — Haut du corps (Push)",
+        exercises: [
+          { name: "Développé couché barre", target: "4 séries x 6-8 reps" },
+          { name: "Développé militaire haltères", target: "3 séries x 8-10 reps" },
+          { name: "Dips assistés / Pec fly machine", isAlternate: true, variants: ["Dips assistés (Machine)", "Pec fly (Machine)"], target: "3 séries x 10-12 reps" },
+          { name: "Élévations latérales", target: "3 séries x 12-15 reps" },
+          { name: "Extension triceps poulie", target: "3 séries x 12-15 reps" }
+        ]
+      },
+      {
+        dayNum: 2,
+        title: "Jour 2 — Bas du corps A (Hanches)",
+        exercises: [
+          { name: "Soulevé de terre roumain", target: "4 séries x 8-10 reps" },
+          { name: "Presse à cuisses", target: "3 séries x 10-12 reps" },
+          { name: "Hip thrust", target: "3 séries x 10-12 reps" },
+          { name: "Leg curl allongé", target: "3 séries x 12-15 reps" },
+          { name: "Marche du fermier (Finisher)", target: "3 séries x 30-40 mètres" },
+          { name: "Mollets debout", target: "4 séries x 15 reps" }
+        ]
+      },
+      {
+        dayNum: 3,
+        title: "Jour 3 — Haut du corps (Pull)",
+        exercises: [
+          { name: "Tractions ou Tirage vertical", target: "4 séries x 6-10 reps" },
+          { name: "Rowing barre ou machine", target: "4 séries x 8-10 reps" },
+          { name: "Tirage horizontal poulie", target: "3 séries x 10-12 reps" },
+          { name: "Curl biceps barre EZ", target: "3 séries x 10-12 reps" },
+          { name: "Face pull", target: "3 séries x 15 reps" }
+        ]
+      },
+      {
+        dayNum: 4,
+        title: "Jour 4 — Bas du corps B (Quads)",
+        exercises: [
+          { name: "Hack squat / Leg press (pieds bas)", isAlternate: true, variants: ["Hack squat (Machine)", "Leg press pieds bas"], target: "4 séries x 8-10 reps" },
+          { name: "Fentes courtes ou bulgares", target: "3 séries x 10 reps/jambe" },
+          { name: "Extension quadriceps", target: "3 séries x 12-15 reps" },
+          { name: "Gainage + obliques", target: "3-4 séries" }
+        ]
+      }
+    ];
+
+    let state = JSON.parse(localStorage.getItem('recompo_pro_state')) || {
+      currentDayIndex: 0,
+      currentExIndex: 0,
+      totalSessionsCount: 1,
+      workoutHistory: {},
+      exerciseImages: {},
+      photos: []
+    };
+
+    let currentSetsBuffer = null;
+
+    function saveData() {
+      localStorage.setItem('recompo_pro_state', JSON.stringify(state));
+    }
+
+    // Alternance 1 fois sur 2 spécifiquement pour la même séance
+    function getActiveExerciseName(ex) {
+      if (ex.isAlternate) {
+        // Nombre d'occurrences de ce jour spécifique (ex: combien de fois on a fait le Jour 1)
+        let dayOccurrence = Math.floor((state.totalSessionsCount - 1) / 4);
+        return ex.variants[dayOccurrence % 2];
+      }
+      return ex.name;
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.view-modal').forEach(v => v.style.display = 'none');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      
+      document.getElementById(tabName + '-view').style.display = 'block';
+      document.getElementById('tab-' + tabName).classList.add('active');
+      
+      if (tabName === 'planning') {
+        updateAnnualTracker();
+      }
+
+      window.scrollTo(0, 0);
+    }
+
+    function renderCurrentExercise() {
+      const currentDayObj = program[state.currentDayIndex];
+      const ex = currentDayObj.exercises[state.currentExIndex];
+      const activeExName = getActiveExerciseName(ex);
+
+      document.getElementById('day-counter').innerText = `SÉANCE ${state.totalSessionsCount}`;
+      document.getElementById('day-name').innerText = currentDayObj.title;
+      document.getElementById('progression-tracker').innerText = `EXERCICE ${state.currentExIndex + 1} SUR ${currentDayObj.exercises.length}`;
+
+      const container = document.getElementById('exercise-container');
+
+      const lastHistory = state.workoutHistory[activeExName] || null;
+      let historyHTML = `<div class="history-badge">💡 <strong>Conseil :</strong> Premiere fois sur cet exo !</div>`;
+      if (lastHistory && lastHistory.sets && lastHistory.sets.length > 0) {
+        const perfStr = lastHistory.sets.map((s, idx) => `S${idx+1}: <b>${s.weight || 0}k</b>×<b>${s.reps || 0}</b>`).join(' · ');
+        historyHTML = `<div class="history-badge">📌 <strong>Dernier coup (${activeExName}) :</strong> ${perfStr}</div>`;
+      }
+
+      if (!currentSetsBuffer) {
+        let defaultLen = ex.target.includes('3 séries') ? 3 : 4;
+        currentSetsBuffer = Array(defaultLen).fill(null).map(() => ({ weight: '', reps: '' }));
+      }
+
+      let setsHTML = currentSetsBuffer.map((set, i) => `
+        <div class="set-row">
+          <div class="set-num">S${i+1}</div>
+          <input type="number" placeholder="kg" value="${set.weight || ''}" onchange="updateBuffer(${i}, 'weight', this.value)">
+          <input type="number" placeholder="reps" value="${set.reps || ''}" onchange="updateBuffer(${i}, 'reps', this.value)">
+        </div>
+      `).join('');
+
+      const storedImg = state.exerciseImages[activeExName] || '';
+
+      container.innerHTML = `
+        <div class="ex-card">
+          <div class="ex-title">${activeExName}</div>
+          <div class="ex-target">${ex.target}</div>
+          ${historyHTML}
+          <div class="img-box">
+            ${storedImg ? `<img src="${storedImg}">` : '<span style="color:#475569; font-size:0.75rem; font-weight:600;">Aucune démo photo</span>'}
+          </div>
+          <input type="file" id="img-input" accept="image/*" style="display:none" onchange="uploadExImage(event, '${activeExName}')">
+          <button class="upload-btn" onclick="document.getElementById('img-input').click()">📷 Ajouter / Modifier Image</button>
+          
+          <div class="sets-header">
+            <div>N°</div>
+            <div>Charge</div>
+            <div>Répétitions</div>
+          </div>
+          <div id="sets-list">${setsHTML}</div>
+        </div>
+      `;
+
+      document.getElementById('prev-btn').style.display = state.currentExIndex > 0 ? 'block' : 'none';
+      document.getElementById('next-btn').innerText = 
+        state.currentExIndex === currentDayObj.exercises.length - 1 ? 'Valider la séance ➔' : 'Exercice Suivant ➔';
+    }
+
+    function updateBuffer(index, field, value) {
+      currentSetsBuffer[index][field] = value;
+      saveCurrentExerciseHistory();
+    }
+
+    function addSet() {
+      currentSetsBuffer.push({ weight: '', reps: '' });
+      renderCurrentExercise();
+    }
+
+    function saveCurrentExerciseHistory() {
+      const currentDayObj = program[state.currentDayIndex];
+      const ex = currentDayObj.exercises[state.currentExIndex];
+      const activeExName = getActiveExerciseName(ex);
+      state.workoutHistory[activeExName] = { sets: [...currentSetsBuffer] };
+      saveData();
+    }
+
+    function uploadExImage(e, exKey) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
         reader.onload = function(evt) {
           state.exerciseImages[exKey] = evt.target.result;
           saveData();
@@ -30,6 +197,21 @@
         currentSetsBuffer = null;
         state.currentExIndex--;
         renderCurrentExercise();
+      }
+    }
+
+    function prevSession() {
+      if (state.totalSessionsCount > 1) {
+        if (confirm("Revenir à la séance précédente ?")) {
+          state.totalSessionsCount--;
+          state.currentExIndex = 0;
+          state.currentDayIndex = (state.currentDayIndex - 1 + program.length) % program.length;
+          currentSetsBuffer = null;
+          saveData();
+          renderCurrentExercise();
+        }
+      } else {
+        alert("Tu es déjà à la séance 1.");
       }
     }
 
@@ -71,6 +253,5 @@
 
     renderCurrentExercise();
     renderPhotos();
-  </script>
-</body>
-</html>
+                </script>
+                
