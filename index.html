@@ -12,7 +12,7 @@
             --card-bg: rgba(26, 20, 22, 0.85);
             --card-bg-inner: #241c1e;
             --card-border: rgba(255, 59, 48, 0.18);
-            --accent-color: #ff3b30; /* iOS Crimson Red */
+            --accent-color: #ff3b30;
             --accent-glow: rgba(255, 59, 48, 0.35);
             --accent-dark: #990000;
             --text-primary: #ffffff;
@@ -42,7 +42,6 @@
             overscroll-behavior-y: none;
         }
 
-        /* En-tête Flottant iOS */
         header {
             position: sticky;
             top: 0;
@@ -79,7 +78,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* Vues */
         .view {
             display: none;
             padding: 20px 16px;
@@ -95,7 +93,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Cartes Premium avec Ombres */
         .card {
             background: var(--card-bg);
             backdrop-filter: blur(15px);
@@ -146,7 +143,6 @@
             border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        /* Boutons Stylisés iOS Red */
         .btn {
             background: linear-gradient(135deg, #ff453a 0%, #d7261b 100%);
             color: #ffffff;
@@ -214,7 +210,6 @@
             margin-top: 6px;
         }
 
-        /* Barre de Progression */
         .progress-bar {
             background-color: rgba(255, 255, 255, 0.08);
             height: 10px;
@@ -233,7 +228,6 @@
             box-shadow: 0 0 12px rgba(255, 69, 58, 0.6);
         }
 
-        /* Cartes Exercice */
         .exercise-item {
             background: var(--card-bg);
             backdrop-filter: blur(15px);
@@ -335,7 +329,6 @@
             box-shadow: 0 0 8px rgba(255, 59, 48, 0.4);
         }
 
-        /* Navigation Inférieure TabBar iOS */
         nav {
             position: fixed;
             bottom: 0;
@@ -373,7 +366,6 @@
             margin-bottom: 3px;
         }
 
-        /* Listes & Textes */
         .info-list {
             list-style: none;
             padding: 0;
@@ -403,7 +395,6 @@
             border-radius: 0 10px 10px 0;
         }
 
-        /* Banner Chrono */
         #active-timer-banner {
             display: none;
             position: fixed;
@@ -423,7 +414,6 @@
             gap: 10px;
         }
 
-        /* Modal Bilan */
         .modal {
             display: none;
             position: fixed;
@@ -449,13 +439,11 @@
 </head>
 <body>
 
-    <!-- BANNIÈRE CHRONOMÈTRE EN COURS -->
     <div id="active-timer-banner">
         <span>⏱️ Repos : <strong id="banner-time-display">00:00</strong></span>
         <button onclick="stopTimer()" style="background:none; border:none; color:#fff; font-weight:bold; cursor:pointer;">✕</button>
     </div>
 
-    <!-- MODAL BILAN DE SÉANCE -->
     <div id="summary-modal" class="modal">
         <div class="modal-content">
             <h2 style="margin-top:0; color:var(--accent-color); font-size:20px;">🔥 Bilan de Séance</h2>
@@ -469,7 +457,7 @@
         <span class="badge" id="session-count-badge">Séance 1 / 160</span>
     </header>
 
-    <!-- VUE 1 : ACCUEIL & SUIVI -->
+    <!-- ACCUEIL -->
     <section id="view-dashboard" class="view active">
         <div class="card">
             <div class="card-title">Prochaine Séance Suggérée</div>
@@ -525,7 +513,7 @@
         </div>
     </section>
 
-    <!-- VUE 2 : SÉANCE EN COURS -->
+    <!-- SÉANCE EN COURS -->
     <section id="view-workout" class="view">
         <div class="card" style="background: rgba(40, 20, 25, 0.9);">
             <div id="workout-day-title" style="font-weight:800; font-size: 18px; color: var(--accent-color);">---</div>
@@ -535,15 +523,13 @@
             </div>
         </div>
 
-        <div id="workout-exercises-container">
-            <!-- Exercices dynamiques -->
-        </div>
+        <div id="workout-exercises-container"></div>
 
         <button class="btn" onclick="finishSession()">Valider la Séance</button>
         <button class="btn btn-secondary" onclick="cancelWorkout()" style="margin-top:10px;">Abandonner</button>
     </section>
 
-    <!-- VUE 3 : MANUEL & RÈGLES -->
+    <!-- MANUEL -->
     <section id="view-rules" class="view">
         <div class="card">
             <div class="card-title">Temps de Repos Officiels PDF</div>
@@ -559,45 +545,25 @@
             <p style="font-size:13px; line-height:1.5; color:var(--text-secondary);">
                 Si tu atteins le haut de la fourchette de répétitions sur toutes les séries pendant <strong>2 séances de suite</strong>, augmente la charge (+2.5 kg sur les gros mouvements, +1 à 2 kg sur l'isolation).
             </p>
-            <p style="font-size:13px; line-height:1.5; color:var(--accent-color); margin-bottom:0;">
-                🔥 <strong>Anti-sous-estimation :</strong> Si la 1ère série te laisse 3+ répétitions en réserve, augmente la charge immédiatement dès la série suivante.
-            </p>
-        </div>
-
-        <div class="card">
-            <div class="card-title">Gestion des Imprévus</div>
-            <p style="font-size:13px; line-height:1.5; color:var(--text-secondary); margin-bottom:0;">
-                • <strong>Séance ratée :</strong> Décale le cycle d'un jour. Ne fais jamais 2 séances le même jour (protection genou).<br><br>
-                • <strong>Semaine ratée :</strong> Ne cherche pas à rattraper. Reprends au bon jour du cycle. La régularité prévaut !
-            </p>
         </div>
     </section>
 
-    <!-- VUE 4 : TACTIQUES & EXECUTION MACHINES -->
+    <!-- GUIDE -->
     <section id="view-guide" class="view">
         <div class="card">
             <div class="card-title">Consignes Exécution Basic-Fit</div>
-            
             <div class="tech-card">
                 <div style="font-weight:700; color:#fff;">Développé couché</div>
                 <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Barre au bas des pectoraux, omoplates serrées.</div>
             </div>
             <div class="tech-card">
                 <div style="font-weight:700; color:#fff;">Hack Squat & Presse 45°</div>
-                <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Dos bien calé, genoux dans l'axe des pieds. Ne jamais verrouiller les genoux en haut.</div>
-            </div>
-            <div class="tech-card">
-                <div style="font-weight:700; color:#fff;">Soulevé de terre roumain</div>
-                <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Genoux semi-fléchis fixes, pliage à la hanche. Focus ischios/fessiers.</div>
-            </div>
-            <div class="tech-card">
-                <div style="font-weight:700; color:#fff;">Marche du fermier (Finisher)</div>
-                <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Épaules basses, gainage serré, pas courts. Recrute le grip (judo) sans choc genou.</div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Dos bien calé, genoux dans l'axe des pieds.</div>
             </div>
         </div>
     </section>
 
-    <!-- NAVIGATION INFERIEURE -->
+    <!-- NAVIGATION -->
     <nav>
         <div class="nav-item active" onclick="switchView('dashboard', this)">
             <div class="nav-icon">📊</div>
@@ -618,68 +584,92 @@
     </nav>
 
     <script>
-        // PROGRAMME AVEC ALTERNANCE CLAIRE DES VARIATIONS
+        // PROGRAMME AVEC NOM D'EXERCICE STRICTEMENT UNIQUE ET ALTERNÉ
         const programData = {
             1: {
                 name: "JOUR 1 - Haut du corps (Push)",
-                getExercises: (cycleCount) => {
-                    const isAlt = Math.floor(cycleCount / 4) % 2 === 1;
+                getExercises: (pushSessionCount) => {
+                    const isEven = (pushSessionCount % 2 === 0);
                     return [
-                        { name: isAlt ? "Développé couché (Haltères)" : "Développé couché (Barre)", sets: 4, reps: "6-8", start: isAlt ? "2x18 kg" : "40 kg", variant: "Variante du cycle", restSec: 120 },
-                        { name: isAlt ? "Développé militaire (Machine)" : "Développé militaire (Haltères)", sets: 3, reps: "8-10", start: isAlt ? "25 kg" : "2x14 kg", variant: "Variante du cycle", restSec: 90 },
-                        { name: isAlt ? "Pec Fly Machine" : "Dips (Poids du corps / Assisté)", sets: 3, reps: "10-12", start: isAlt ? "30 kg" : "Pdc", variant: "Alternance automatique chaque séance Push", restSec: 60 },
-                        { name: isAlt ? "Élévations latérales (Poulie)" : "Élévations latérales (Haltères)", sets: 3, reps: "12-15", start: isAlt ? "7.5 kg" : "2x8 kg", variant: "Variante du cycle", restSec: 60 },
-                        { name: isAlt ? "Extension triceps (Nuque haltère)" : "Extension triceps (Poulie)", sets: 3, reps: "12-15", start: isAlt ? "12 kg" : "20-25 kg", variant: "Variante du cycle", restSec: 60 }
+                        { 
+                            name: isEven ? "Développé couché (Barre)" : "Développé couché (Haltères)", 
+                            sets: 4, reps: "6-8", start: isEven ? "40 kg" : "2x18 kg", 
+                            variant: isEven ? "Semaine Barre" : "Semaine Haltères", restSec: 120 
+                        },
+                        { 
+                            name: isEven ? "Développé militaire (Haltères)" : "Développé militaire (Machine)", 
+                            sets: 3, reps: "8-10", start: isEven ? "2x14 kg" : "25 kg", 
+                            variant: isEven ? "Semaine Haltères" : "Semaine Machine", restSec: 90 
+                        },
+                        { 
+                            name: isEven ? "Dips (Poids du corps / Assisté)" : "Pec Fly Machine", 
+                            sets: 3, reps: "10-12", start: isEven ? "Pdc" : "30 kg", 
+                            variant: isEven ? "Semaine A (Dips)" : "Semaine B (Pec Fly)", restSec: 60 
+                        },
+                        { 
+                            name: isEven ? "Élévations latérales (Haltères)" : "Élévations latérales (Poulie)", 
+                            sets: 3, reps: "12-15", start: isEven ? "2x8 kg" : "7.5 kg", 
+                            variant: isEven ? "Semaine Haltères" : "Semaine Poulie", restSec: 60 
+                        },
+                        { 
+                            name: isEven ? "Extension triceps (Poulie)" : "Extension triceps (Nuque haltère)", 
+                            sets: 3, reps: "12-15", start: isEven ? "20-25 kg" : "12 kg", 
+                            variant: isEven ? "Semaine Poulie" : "Semaine Haltère", restSec: 60 
+                        }
                     ];
                 }
             },
             2: {
                 name: "JOUR 2 - Bas du corps (Hanche-dominant)",
-                getExercises: (cycleCount) => {
-                    const isAlt = Math.floor(cycleCount / 4) % 2 === 1;
+                getExercises: (leg1Count) => {
+                    const isEven = (leg1Count % 2 === 0);
                     return [
-                        { name: isAlt ? "Soulevé de terre roumain (Haltères)" : "Soulevé de terre roumain (Barre)", sets: 4, reps: "8-10", start: isAlt ? "2x22 kg" : "50 kg", variant: "Variante du cycle", restSec: 120 },
+                        { name: isEven ? "Soulevé de terre roumain (Barre)" : "Soulevé de terre roumain (Haltères)", sets: 4, reps: "8-10", start: isEven ? "50 kg" : "2x22 kg", variant: isEven ? "Barre" : "Haltères", restSec: 120 },
                         { name: "Presse à cuisses", sets: 3, reps: "10-12", start: "≈100 kg", variant: "Pieds larges", restSec: 90 },
                         { name: "Hip thrust", sets: 3, reps: "10-12", start: "40 kg", variant: "Focus fessiers", restSec: 90 },
-                        { name: isAlt ? "Leg curl (Assis)" : "Leg curl (Allongé)", sets: 3, reps: "12-15", start: "25-30 kg", variant: "Variante du cycle", restSec: 60 },
+                        { name: isEven ? "Leg curl (Allongé)" : "Leg curl (Assis)", sets: 3, reps: "12-15", start: "25-30 kg", variant: "Alternance", restSec: 60 },
                         { name: "Marche du fermier", sets: 3, reps: "30-40m", start: "2x24-32 kg", variant: "Grip & Gainage", restSec: 60 },
-                        { name: isAlt ? "Mollets à la presse" : "Mollets debout", sets: 4, reps: "15", start: "40 kg", variant: "Variante du cycle", restSec: 60 }
+                        { name: isEven ? "Mollets debout" : "Mollets à la presse", sets: 4, reps: "15", start: "40 kg", variant: "Alternance", restSec: 60 }
                     ];
                 }
             },
             3: {
                 name: "JOUR 3 - Haut du corps (Pull)",
-                getExercises: (cycleCount) => {
-                    const isAlt = Math.floor(cycleCount / 4) % 2 === 1;
+                getExercises: (pullCount) => {
+                    const isEven = (pullCount % 2 === 0);
                     return [
-                        { name: isAlt ? "Tirage vertical (Prise serrée)" : "Tractions / Tirage vertical (Prise large)", sets: 4, reps: "6-10", start: "Assist -20 kg / 40kg", variant: "Variante du cycle", restSec: 120 },
-                        { name: isAlt ? "Rowing T-Bar" : "Rowing barre", sets: 4, reps: "8-10", start: "40-50 kg", variant: "Variante du cycle", restSec: 90 },
-                        { name: isAlt ? "Tirage horizontal (Poignée V)" : "Tirage horizontal (Prise large)", sets: 3, reps: "10-12", start: "35-40 kg", variant: "Variante du cycle", restSec: 90 },
-                        { name: isAlt ? "Curl biceps (Haltères inclinés)" : "Curl biceps (Barre EZ)", sets: 3, reps: "10-12", start: isAlt ? "2x10 kg" : "20 kg", variant: "Variante du cycle", restSec: 60 },
+                        { name: isEven ? "Tirage vertical (Prise large)" : "Tirage vertical (Prise serrée)", sets: 4, reps: "6-10", start: "40 kg", variant: "Alternance", restSec: 120 },
+                        { name: isEven ? "Rowing barre" : "Rowing T-Bar", sets: 4, reps: "8-10", start: "40-50 kg", variant: "Alternance", restSec: 90 },
+                        { name: isEven ? "Tirage horizontal (Prise large)" : "Tirage horizontal (Poignée V)", sets: 3, reps: "10-12", start: "35-40 kg", variant: "Alternance", restSec: 90 },
+                        { name: isEven ? "Curl biceps (Barre EZ)" : "Curl biceps (Haltères inclinés)", sets: 3, reps: "10-12", start: isEven ? "20 kg" : "2x10 kg", variant: "Alternance", restSec: 60 },
                         { name: "Face pull", sets: 3, reps: "15", start: "15-20 kg", variant: "Poulie haute", restSec: 60 }
                     ];
                 }
             },
             4: {
                 name: "JOUR 4 - Bas du corps (Quadriceps)",
-                getExercises: (cycleCount) => {
-                    const isAlt = Math.floor(cycleCount / 4) % 2 === 1;
+                getExercises: (leg2Count) => {
+                    const isEven = (leg2Count % 2 === 0);
                     return [
-                        { name: isAlt ? "Leg press (Pieds bas)" : "Hack squat", sets: 4, reps: "8-10", start: "40-60 kg", variant: "Alternance automatique", restSec: 120 },
-                        { name: isAlt ? "Fentes bulgares" : "Fentes courtes marchées", sets: 3, reps: "10/jambe", start: "2x10 kg", variant: "Variante du cycle", restSec: 90 },
+                        { name: isEven ? "Hack squat" : "Leg press (Pieds bas)", sets: 4, reps: "8-10", start: "40-60 kg", variant: "Alternance", restSec: 120 },
+                        { name: isEven ? "Fentes courtes marchées" : "Fentes bulgares", sets: 3, reps: "10/jambe", start: "2x10 kg", variant: "Alternance", restSec: 90 },
                         { name: "Extension quadriceps", sets: 3, reps: "12-15", start: "30-35 kg", variant: "Machine", restSec: 60 },
-                        { name: "Gainage + Obliques", sets: 4, reps: "Chrono/Reps", start: "Poids du corps", variant: "Planche, rotations poulie", restSec: 60 }
+                        { name: "Gainage + Obliques", sets: 4, reps: "Chrono/Reps", start: "Poids du corps", variant: "Planche / Poulie", restSec: 60 }
                     ];
                 }
             }
         };
 
-        // GESTION DU STORAGE LOCAL
+        // LOCAL STORAGE
         let userData = JSON.parse(localStorage.getItem('basicFitApp_red_data')) || {
             completedSessions: 0,
             currentCycleDay: 1,
             history: [],
-            exerciseMaxes: {}
+            exerciseMaxes: {},
+            pushCount: 0,
+            leg1Count: 0,
+            pullCount: 0,
+            leg2Count: 0
         };
 
         let timerInterval = null;
@@ -687,6 +677,10 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             if(!userData.exerciseMaxes) userData.exerciseMaxes = {};
+            if(userData.pushCount === undefined) userData.pushCount = 0;
+            if(userData.leg1Count === undefined) userData.leg1Count = 0;
+            if(userData.pullCount === undefined) userData.pullCount = 0;
+            if(userData.leg2Count === undefined) userData.leg2Count = 0;
             updateDashboardUI();
         });
 
@@ -694,7 +688,6 @@
             localStorage.setItem('basicFitApp_red_data', JSON.stringify(userData));
         }
 
-        // NAVIGATION
         function switchView(viewId, element) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -744,7 +737,6 @@
             switchView('workout', document.querySelectorAll('.nav-item')[1]);
         }
 
-        // CHRONOMÈTRE
         function startTimer(seconds, buttonEl) {
             clearInterval(timerInterval);
             remainingTime = seconds;
@@ -785,10 +777,18 @@
             document.getElementById('banner-time-display').innerText = formatted;
         }
 
-        // INJECTION DES EXERCICES
+        function getSpecificCount(dayNumber) {
+            if(dayNumber === 1) return userData.pushCount;
+            if(dayNumber === 2) return userData.leg1Count;
+            if(dayNumber === 3) return userData.pullCount;
+            if(dayNumber === 4) return userData.leg2Count;
+            return 0;
+        }
+
         function renderWorkoutForm(dayNumber) {
             const dayData = programData[dayNumber];
-            const exercisesList = dayData.getExercises(userData.completedSessions);
+            const specificCount = getSpecificCount(dayNumber);
+            const exercisesList = dayData.getExercises(specificCount);
 
             document.getElementById('workout-day-title').innerText = dayData.name;
             
@@ -908,7 +908,7 @@
             let newPRsCount = 0;
 
             const cards = document.querySelectorAll('.exercise-item');
-            cards.forEach((card, idx) => {
+            cards.forEach((card) => {
                 const exName = card.getAttribute('data-ex-name');
                 const prevMax = userData.exerciseMaxes[exName] || 0;
                 let sessionMax = 0;
@@ -931,6 +931,11 @@
                 date: new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }),
                 volume: totalVol
             };
+
+            if(userData.currentCycleDay === 1) userData.pushCount += 1;
+            else if(userData.currentCycleDay === 2) userData.leg1Count += 1;
+            else if(userData.currentCycleDay === 3) userData.pullCount += 1;
+            else if(userData.currentCycleDay === 4) userData.leg2Count += 1;
 
             userData.completedSessions += 1;
             userData.history.push(sessionRecord);
@@ -968,6 +973,15 @@
             }
 
             if(confirm("Es-tu sûr de vouloir annuler la dernière séance enregistrée ?")) {
+                const lastSession = userData.history[userData.history.length - 1];
+                
+                if(lastSession) {
+                    if(lastSession.day === 1 && userData.pushCount > 0) userData.pushCount -= 1;
+                    else if(lastSession.day === 2 && userData.leg1Count > 0) userData.leg1Count -= 1;
+                    else if(lastSession.day === 3 && userData.pullCount > 0) userData.pullCount -= 1;
+                    else if(lastSession.day === 4 && userData.leg2Count > 0) userData.leg2Count -= 1;
+                }
+
                 userData.completedSessions -= 1;
                 userData.history.pop();
                 
