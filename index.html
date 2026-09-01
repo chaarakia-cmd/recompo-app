@@ -403,7 +403,7 @@
             border-radius: 0 10px 10px 0;
         }
 
-        /* Modal / Notification Flottante Chrono */
+        /* Banner Chrono */
         #active-timer-banner {
             display: none;
             position: fixed;
@@ -618,47 +618,59 @@
     </nav>
 
     <script>
-        // DONNÉES DU PROGRAMME AVEC PAUSES DÉDIÉES EN SECONDES (Issue du PDF)
+        // PROGRAMME AVEC ALTERNANCE CLAIRE DES VARIATIONS
         const programData = {
             1: {
                 name: "JOUR 1 - Haut du corps (Push)",
-                exercises: [
-                    { name: "Développé couché barre", sets: 4, reps: "6-8", start: "40 kg", variant: "Alterne: haltères, Smith machine", restSec: 120 },
-                    { name: "Développé militaire haltères", sets: 3, reps: "8-10", start: "2x14 kg", variant: "Alterne: machine", restSec: 90 },
-                    { name: "Dips ou Pec Fly", sets: 3, reps: "10-12", start: "Pdc / Mi-pile", variant: "Alterne chaque semaine", restSec: 60 },
-                    { name: "Élévations latérales", sets: 3, reps: "12-15", start: "2x8 kg", variant: "Alterne: poulie", restSec: 60 },
-                    { name: "Extension triceps poulie", sets: 3, reps: "12-15", start: "20-25 kg", variant: "Alterne: haltère nuque", restSec: 60 }
-                ]
+                getExercises: (cycleCount) => {
+                    const isAlt = Math.floor(cycleCount / 4) % 2 === 1;
+                    return [
+                        { name: isAlt ? "Développé couché (Haltères)" : "Développé couché (Barre)", sets: 4, reps: "6-8", start: isAlt ? "2x18 kg" : "40 kg", variant: "Variante du cycle", restSec: 120 },
+                        { name: isAlt ? "Développé militaire (Machine)" : "Développé militaire (Haltères)", sets: 3, reps: "8-10", start: isAlt ? "25 kg" : "2x14 kg", variant: "Variante du cycle", restSec: 90 },
+                        { name: isAlt ? "Pec Fly Machine" : "Dips (Poids du corps / Assisté)", sets: 3, reps: "10-12", start: isAlt ? "30 kg" : "Pdc", variant: "Alternance automatique chaque séance Push", restSec: 60 },
+                        { name: isAlt ? "Élévations latérales (Poulie)" : "Élévations latérales (Haltères)", sets: 3, reps: "12-15", start: isAlt ? "7.5 kg" : "2x8 kg", variant: "Variante du cycle", restSec: 60 },
+                        { name: isAlt ? "Extension triceps (Nuque haltère)" : "Extension triceps (Poulie)", sets: 3, reps: "12-15", start: isAlt ? "12 kg" : "20-25 kg", variant: "Variante du cycle", restSec: 60 }
+                    ];
+                }
             },
             2: {
                 name: "JOUR 2 - Bas du corps (Hanche-dominant)",
-                exercises: [
-                    { name: "Soulevé de terre roumain", sets: 4, reps: "8-10", start: "50 kg", variant: "Alterne: haltères", restSec: 120 },
-                    { name: "Presse à cuisses", sets: 3, reps: "10-12", start: "≈100 kg", variant: "Pieds larges", restSec: 90 },
-                    { name: "Hip thrust", sets: 3, reps: "10-12", start: "40 kg", variant: "Alterne: machine si dispo", restSec: 90 },
-                    { name: "Leg curl allongé", sets: 3, reps: "12-15", start: "25-30 kg", variant: "Alterne: assis", restSec: 60 },
-                    { name: "Marche du fermier", sets: 3, reps: "30-40m", start: "2x24-32 kg", variant: "Grip & Gainage", restSec: 60 },
-                    { name: "Mollets debout", sets: 4, reps: "15", start: "40 kg", variant: "Alterne: presse", restSec: 60 }
-                ]
+                getExercises: (cycleCount) => {
+                    const isAlt = Math.floor(cycleCount / 4) % 2 === 1;
+                    return [
+                        { name: isAlt ? "Soulevé de terre roumain (Haltères)" : "Soulevé de terre roumain (Barre)", sets: 4, reps: "8-10", start: isAlt ? "2x22 kg" : "50 kg", variant: "Variante du cycle", restSec: 120 },
+                        { name: "Presse à cuisses", sets: 3, reps: "10-12", start: "≈100 kg", variant: "Pieds larges", restSec: 90 },
+                        { name: "Hip thrust", sets: 3, reps: "10-12", start: "40 kg", variant: "Focus fessiers", restSec: 90 },
+                        { name: isAlt ? "Leg curl (Assis)" : "Leg curl (Allongé)", sets: 3, reps: "12-15", start: "25-30 kg", variant: "Variante du cycle", restSec: 60 },
+                        { name: "Marche du fermier", sets: 3, reps: "30-40m", start: "2x24-32 kg", variant: "Grip & Gainage", restSec: 60 },
+                        { name: isAlt ? "Mollets à la presse" : "Mollets debout", sets: 4, reps: "15", start: "40 kg", variant: "Variante du cycle", restSec: 60 }
+                    ];
+                }
             },
             3: {
                 name: "JOUR 3 - Haut du corps (Pull)",
-                exercises: [
-                    { name: "Tractions / Tirage vertical", sets: 4, reps: "6-10", start: "Assist -20 kg", variant: "Alterne prise large/serrée", restSec: 120 },
-                    { name: "Rowing barre ou machine", sets: 4, reps: "8-10", start: "40-50 kg", variant: "Alterne: T-Bar", restSec: 90 },
-                    { name: "Tirage horizontal poulie", sets: 3, reps: "10-12", start: "35-40 kg", variant: "Alterne poignée V/large", restSec: 90 },
-                    { name: "Curl biceps barre EZ", sets: 3, reps: "10-12", start: "20 kg", variant: "Alterne: haltères", restSec: 60 },
-                    { name: "Face pull", sets: 3, reps: "15", start: "15-20 kg", variant: "Poulie haute", restSec: 60 }
-                ]
+                getExercises: (cycleCount) => {
+                    const isAlt = Math.floor(cycleCount / 4) % 2 === 1;
+                    return [
+                        { name: isAlt ? "Tirage vertical (Prise serrée)" : "Tractions / Tirage vertical (Prise large)", sets: 4, reps: "6-10", start: "Assist -20 kg / 40kg", variant: "Variante du cycle", restSec: 120 },
+                        { name: isAlt ? "Rowing T-Bar" : "Rowing barre", sets: 4, reps: "8-10", start: "40-50 kg", variant: "Variante du cycle", restSec: 90 },
+                        { name: isAlt ? "Tirage horizontal (Poignée V)" : "Tirage horizontal (Prise large)", sets: 3, reps: "10-12", start: "35-40 kg", variant: "Variante du cycle", restSec: 90 },
+                        { name: isAlt ? "Curl biceps (Haltères inclinés)" : "Curl biceps (Barre EZ)", sets: 3, reps: "10-12", start: isAlt ? "2x10 kg" : "20 kg", variant: "Variante du cycle", restSec: 60 },
+                        { name: "Face pull", sets: 3, reps: "15", start: "15-20 kg", variant: "Poulie haute", restSec: 60 }
+                    ];
+                }
             },
             4: {
                 name: "JOUR 4 - Bas du corps (Quadriceps)",
-                exercises: [
-                    { name: "Hack squat / Leg press bas", sets: 4, reps: "8-10", start: "40-60 kg", variant: "Alterne les deux chaque semaine", restSec: 120 },
-                    { name: "Fentes courtes / Bulgares", sets: 3, reps: "10/jambe", start: "2x10 kg", variant: "Alterne marchées/bulgares", restSec: 90 },
-                    { name: "Extension quadriceps", sets: 3, reps: "12-15", start: "30-35 kg", variant: "Machine", restSec: 60 },
-                    { name: "Gainage + Obliques", sets: 4, reps: "Chrono/Reps", start: "Poids du corps", variant: "Planche, rotations poulie", restSec: 60 }
-                ]
+                getExercises: (cycleCount) => {
+                    const isAlt = Math.floor(cycleCount / 4) % 2 === 1;
+                    return [
+                        { name: isAlt ? "Leg press (Pieds bas)" : "Hack squat", sets: 4, reps: "8-10", start: "40-60 kg", variant: "Alternance automatique", restSec: 120 },
+                        { name: isAlt ? "Fentes bulgares" : "Fentes courtes marchées", sets: 3, reps: "10/jambe", start: "2x10 kg", variant: "Variante du cycle", restSec: 90 },
+                        { name: "Extension quadriceps", sets: 3, reps: "12-15", start: "30-35 kg", variant: "Machine", restSec: 60 },
+                        { name: "Gainage + Obliques", sets: 4, reps: "Chrono/Reps", start: "Poids du corps", variant: "Planche, rotations poulie", restSec: 60 }
+                    ];
+                }
             }
         };
 
@@ -732,7 +744,7 @@
             switchView('workout', document.querySelectorAll('.nav-item')[1]);
         }
 
-        // CHRONOMÈTRE DE REPOS ERGONOMIQUE
+        // CHRONOMÈTRE
         function startTimer(seconds, buttonEl) {
             clearInterval(timerInterval);
             remainingTime = seconds;
@@ -776,12 +788,14 @@
         // INJECTION DES EXERCICES
         function renderWorkoutForm(dayNumber) {
             const dayData = programData[dayNumber];
+            const exercisesList = dayData.getExercises(userData.completedSessions);
+
             document.getElementById('workout-day-title').innerText = dayData.name;
             
             const container = document.getElementById('workout-exercises-container');
             container.innerHTML = '';
 
-            dayData.exercises.forEach((ex, exIndex) => {
+            exercisesList.forEach((ex, exIndex) => {
                 const exCard = document.createElement('div');
                 exCard.className = 'exercise-item';
                 exCard.setAttribute('data-ex-index', exIndex);
@@ -925,7 +939,6 @@
             saveStorage();
             updateDashboardUI();
 
-            // Affichage du Bilan Pop-up
             const summaryHTML = `
                 📌 <strong>Séance :</strong> ${currentDayData.name}<br>
                 📊 <strong>Volume total :</strong> ${totalVol.toLocaleString('fr-FR')} kg<br>
