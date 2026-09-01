@@ -2,256 +2,843 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracker de Musculation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Recomposition Corporelle - Transformation</title>
+    <apple-mobile-web-app-capable>yes</apple-mobile-web-app-capable>
+    <apple-mobile-web-app-status-bar-style>black-translucent</apple-mobile-web-app-status-bar-style>
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --accent: #ff4757;
-            --accent-green: #2ed573;
-            --text-main: #ffffff;
-            --text-sub: #a4b0be;
-            --border: #2f3542;
+            --bg-color: #0b0b0d;
+            --card-bg: rgba(26, 20, 22, 0.85);
+            --card-bg-inner: #241c1e;
+            --card-border: rgba(255, 59, 48, 0.18);
+            --accent-color: #ff3b30; /* iOS Crimson Red */
+            --accent-glow: rgba(255, 59, 48, 0.35);
+            --accent-dark: #990000;
+            --text-primary: #ffffff;
+            --text-secondary: #a19da2;
+            --separator: rgba(255, 255, 255, 0.08);
+            --green-color: #34c759;
+            --red-color: #ff3b30;
+            --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.45);
+            --shadow-red-glow: 0 4px 20px rgba(255, 59, 48, 0.25);
+            --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 59, 48, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-main);
+            background-image: radial-gradient(circle at 50% 0%, rgba(255, 59, 48, 0.12) 0%, transparent 60%);
+            background-attachment: fixed;
+            color: var(--text-primary);
             margin: 0;
-            padding: 15px;
-            padding-bottom: 80px;
+            padding: 0;
+            padding-bottom: 100px;
+            overscroll-behavior-y: none;
         }
 
-        /* Navigation Onglets */
-        .nav-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text-sub);
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .tab-btn.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* Cartes Exercice */
-        .exercise-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border);
-        }
-
-        .exercise-header {
+        /* En-tête Flottant iOS */
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 12, 13, 0.82);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 100;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--card-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        header h1 {
+            font-size: 19px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #ffffff 40%, var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, var(--accent-color), #c0261d);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-red-glow);
+            letter-spacing: 0.3px;
+        }
+
+        /* Vues */
+        .view {
+            display: none;
+            padding: 20px 16px;
+            animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cartes Premium avec Ombres */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 18px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--card-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 59, 48, 0.4), transparent);
+        }
+
+        .card-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
             margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
         }
 
-        .exercise-title {
-            font-size: 1.1rem;
-            font-weight: bold;
+        .card-value {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
-        /* Direct History & Records */
-        .exercise-stats {
-            background: #252a34;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            margin-bottom: 12px;
-        }
-        .exercise-stats strong { color: #eccc68; }
-
-        /* Rangees de Series */
-        .set-row {
-            display: flex;
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
+            text-align: center;
+        }
+
+        .macro-box {
+            background: rgba(0,0,0,0.3);
+            padding: 10px 4px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* Boutons Stylisés iOS Red */
+        .btn {
+            background: linear-gradient(135deg, #ff453a 0%, #d7261b 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 14px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            box-shadow: var(--shadow-red-glow);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 10px rgba(255, 59, 48, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.07);
+            color: var(--text-primary);
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-danger {
+            background: rgba(255, 59, 48, 0.15);
+            color: #ff453a;
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            box-shadow: none;
+        }
+
+        .btn-timer {
+            background: linear-gradient(135deg, rgba(255,59,48,0.15), rgba(255,59,48,0.05));
+            color: var(--accent-color);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            margin-top: 0;
+            box-shadow: 0 4px 12px rgba(255, 59, 48, 0.15);
+        }
+
+        .btn-timer.running {
+            background: linear-gradient(135deg, #ff9500, #c67400);
+            color: #fff;
+            border: none;
+            box-shadow: 0 4px 12px rgba(255, 149, 0, 0.3);
+        }
+
+        /* Barre de Progression */
+        .progress-bar {
+            background-color: rgba(255, 255, 255, 0.08);
+            height: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff453a, #ff7b00);
+            height: 100%;
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 12px rgba(255, 69, 58, 0.6);
+        }
+
+        /* Cartes Exercice */
+        .exercise-item {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--card-border);
+        }
+
+        .exercise-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+
+        .exercise-title-group {
+            flex: 1;
+        }
+
+        .exercise-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .exercise-target {
+            font-size: 13px;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .exercise-variant {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+            background: rgba(0,0,0,0.25);
+            padding: 6px 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .set-row {
+            display: grid;
+            grid-template-columns: 36px 1fr 1fr;
+            gap: 10px;
             align-items: center;
             margin-bottom: 8px;
         }
-        .set-label { width: 65px; font-size: 0.85rem; color: var(--text-sub); }
-        input[type="number"], input[type="text"] {
-            background: #2f3542;
-            border: 1px solid var(--border);
-            color: white;
-            padding: 8px;
-            border-radius: 6px;
-            width: 100%;
-            font-size: 0.9rem;
-        }
-        
-        /* Buttons */
-        .btn-add {
-            background: transparent;
-            border: 1px dashed var(--accent);
-            color: var(--accent);
-            width: 100%;
-            padding: 8px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 5px;
+
+        .set-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 600;
         }
 
-        .btn-finish {
-            background: var(--accent-green);
-            color: white;
-            border: none;
+        input[type="number"] {
+            background-color: var(--card-bg-inner);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-primary);
+            padding: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
             width: 100%;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Banner PR */
-        .pr-banner {
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 8px rgba(255, 59, 48, 0.4);
+        }
+
+        /* Navigation Inférieure TabBar iOS */
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(18, 14, 15, 0.88);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 28px 0;
+            z-index: 100;
+            box-shadow: 0 -10px 25px rgba(0,0,0,0.6);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+        /* Listes & Textes */
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .info-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--separator);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .tech-card {
+            margin-bottom: 12px;
+            border-left: 3px solid var(--accent-color);
+            padding-left: 12px;
+            background: rgba(0,0,0,0.2);
+            padding-top: 8px;
+            padding-bottom: 8px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        /* Banner Chrono */
+        #active-timer-banner {
             display: none;
-            background: #eccc68;
-            color: #000;
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.95), rgba(180, 20, 15, 0.95));
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 10px 25px rgba(255, 59, 48, 0.4);
+            z-index: 999;
+            align-items: center;
+            gap: 10px;
         }
     </style>
 </head>
 <body>
 
-    <!-- NAV TABS -->
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('workout')">Séance</button>
-        <button class="tab-btn" onclick="switchTab('workload')">Charge de Travail</button>
+    <!-- BANNIÈRE CHRONOMÈTRE EN COURS -->
+    <div id="active-timer-banner">
+        <span>⏱️ Repos : <strong id="banner-time-display">00:00</strong></span>
+        <button onclick="stopTimer()" style="background:none; border:none; color:#fff; font-weight:bold; cursor:pointer;">✕</button>
     </div>
 
-    <!-- TAB 1: SEANCE DU JOUR -->
-    <div id="tab-workout" class="tab-content active">
-        
-        <div id="workout-container">
-            <!-- Exemple Exercice -->
-            <div class="exercise-card" data-exercise="Développé Couché">
-                <div class="exercise-header">
-                    <span class="exercise-title">Développé Couché</span>
-                </div>
-                
-                <!-- Historique direct & Record 1RM -->
-                <div class="exercise-stats">
-                    Dernière fois : <strong>80 kg × 8</strong> | 1RM Max : <strong>101 kg</strong>
-                </div>
+    <header>
+        <h1 id="header-title">Tableau de Bord</h1>
+        <span class="badge" id="session-count-badge">Séance 1 / 160</span>
+    </header>
 
-                <div class="pr-banner" id="pr-banner-dc">🏆 NOUVEAU RECORD DETECTÉ !</div>
+    <!-- VUE 1 : ACCUEIL & SUIVI -->
+    <section id="view-dashboard" class="view active">
+        <div class="card">
+            <div class="card-title">Prochaine Séance Suggérée</div>
+            <div class="card-value" id="next-session-title" style="color:var(--accent-color);">JOUR 1 - Haut (Push)</div>
+            <button class="btn" onclick="startSession()">
+                <span>Démarrer la séance</span> ➔
+            </button>
+        </div>
 
-                <div class="sets-list" id="sets-dc">
-                    <div class="set-row">
-                        <span class="set-label">Série 1</span>
-                        <input type="text" placeholder="ex: 80kg x 8 ou 80kg x 4 + 70kg x 4" class="set-input" onchange="checkPR('Développé Couché', this.value, 'pr-banner-dc')">
-                    </div>
-                </div>
-
-                <!-- Bouton pour rajouter une serie -->
-                <button class="btn-add" onclick="addSet('sets-dc')">+ Rajouter une série</button>
+        <div class="card">
+            <div class="card-title">Progression Annuelle (Objectif: 160)</div>
+            <div class="card-value" id="total-sessions-text">0 <span style="font-size:15px; font-weight:normal; color:var(--text-secondary);">/ 160 séances</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="annual-progress"></div>
+            </div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 10px; display:flex; justify-content:space-between;">
+                <span>Min: 82</span>
+                <span>Cible: 123</span>
+                <span>Optimal: 160</span>
             </div>
         </div>
 
-        <!-- BILAN DE SEANCE -->
-        <div class="exercise-card" style="margin-top: 25px;">
-            <div class="exercise-title" style="margin-bottom: 10px;">Bilan de la séance</div>
-            <label style="font-size: 0.85rem; color: var(--text-sub);">RPE Global / Fatigue (1 à 10) :</label>
-            <input type="number" id="rpe-global" min="1" max="10" placeholder="Ex: 8" style="margin-top: 5px;">
-            
-            <button class="btn-finish" onclick="finishWorkout()">Valider et Enregistrer la Séance</button>
-        </div>
-    </div>
-
-    <!-- TAB 2: CHARGE DE TRAVAIL -->
-    <div id="tab-workload" class="tab-content">
-        <div class="exercise-card">
-            <div class="exercise-title">Volume Hebdomadaire (Tonnage)</div>
-            <p style="color: var(--text-sub); font-size: 0.9rem;">Suivi de la charge accumulée sur la semaine :</p>
-            
-            <div style="margin-top: 15px;">
-                <div style="display:flex; justify-content:space-between; margin-bottom: 5px;">
-                    <span>Pectoraux / Triceps</span>
-                    <strong>4 250 kg</strong>
+        <div class="card">
+            <div class="card-title">Nutrition Quotidienne Cible</div>
+            <div class="grid-4">
+                <div class="macro-box">
+                    <div style="font-size:11px; color:var(--text-secondary);">Calories</div>
+                    <div style="font-weight:bold; font-size:14px; margin-top:2px;">~2700</div>
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom: 5px;">
-                    <span>Dos / Biceps</span>
-                    <strong>5 100 kg</strong>
+                <div class="macro-box" style="border-color: rgba(255, 59, 48, 0.3);">
+                    <div style="font-size:11px; color:var(--text-secondary);">Protides</div>
+                    <div style="font-weight:bold; font-size:14px; color:var(--accent-color); margin-top:2px;">~180g</div>
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom: 5px;">
-                    <span>Jambes</span>
-                    <strong>6 800 kg</strong>
+                <div class="macro-box">
+                    <div style="font-size:11px; color:var(--text-secondary);">Lipides</div>
+                    <div style="font-weight:bold; font-size:14px; margin-top:2px;">~80g</div>
+                </div>
+                <div class="macro-box">
+                    <div style="font-size:11px; color:var(--text-secondary);">Glucides</div>
+                    <div style="font-weight:bold; font-size:14px; margin-top:2px;">~310g</div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div class="card">
+            <div class="card-title">Historique Récent</div>
+            <div id="history-list">
+                <div style="color:var(--text-secondary); font-size:14px;">Aucune séance enregistrée.</div>
+            </div>
+            <button class="btn btn-secondary" onclick="undoLastSession()" style="margin-top:16px;">
+                ↩️ Annuler la séance précédente
+            </button>
+            <button class="btn btn-danger" onclick="resetAllData()" style="margin-top:10px;">
+                🗑️ Réinitialiser tout
+            </button>
+        </div>
+    </section>
+
+    <!-- VUE 2 : SÉANCE EN COURS -->
+    <section id="view-workout" class="view">
+        <div class="card" style="background: rgba(40, 20, 25, 0.9);">
+            <div id="workout-day-title" style="font-weight:800; font-size: 18px; color: var(--accent-color);">---</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-top:4px;">Les données de ta dernière séance de ce type sont pré-remplies. Ajuste selon tes perfs !</div>
+        </div>
+
+        <div id="workout-exercises-container">
+            <!-- Exercices dynamiques -->
+        </div>
+
+        <button class="btn" onclick="finishSession()">Valider la Séance</button>
+        <button class="btn btn-secondary" onclick="cancelWorkout()" style="margin-top:10px;">Abandonner</button>
+    </section>
+
+    <!-- VUE 3 : MANUEL & RÈGLES -->
+    <section id="view-rules" class="view">
+        <div class="card">
+            <div class="card-title">Temps de Repos Officiels</div>
+            <ul class="info-list">
+                <li class="info-item"><span>Mouvements lourds / polyarticulaires</span><strong style="color:var(--accent-color);">90 - 120 sec</strong></li>
+                <li class="info-item"><span>Exercices d'isolation / finishers</span><strong style="color:var(--accent-color);">45 - 60 sec</strong></li>
+                <li class="info-item"><span>Hydratation recommandée</span><strong>2 - 2.5 L / jour</strong></li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Règle de Progression</div>
+            <p style="font-size:13px; line-height:1.5; color:var(--text-secondary);">
+                Si tu atteins le haut de la fourchette de répétitions sur toutes les séries pendant <strong>2 séances de suite</strong>, augmente la charge (+2.5 kg sur les gros mouvements, +1 à 2 kg sur l'isolation).
+            </p>
+            <p style="font-size:13px; line-height:1.5; color:var(--accent-color); margin-bottom:0;">
+                🔥 <strong>Anti-sous-estimation :</strong> Si la 1ère série te laisse 3+ répétitions en réserve, augmente la charge immédiatement dès la série suivante.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Gestion des Imprévus</div>
+            <p style="font-size:13px; line-height:1.5; color:var(--text-secondary); margin-bottom:0;">
+                • <strong>Séance ratée :</strong> Décale le cycle d'un jour. Ne fais jamais 2 séances le même jour.<br><br>
+                • <strong>Semaine ratée :</strong> Ne cherche pas à rattraper. Reprends au bon jour du cycle. La régularité prévaut !
+            </p>
+        </div>
+    </section>
+
+    <!-- VUE 4 : TACTIQUES & EXECUTION MACHINES -->
+    <section id="view-guide" class="view">
+        <div class="card">
+            <div class="card-title">Consignes Exécution Basic-Fit</div>
+            
+            <div class="tech-card">
+                <div style="font-weight:700; color:#fff;">Développé couché</div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Barre au bas des pectoraux, omoplates serrées.</div>
+            </div>
+            <div class="tech-card">
+                <div style="font-weight:700; color:#fff;">Hack Squat & Presse 45°</div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Dos bien calé, genoux dans l'axe des pieds. Ne jamais verrouiller les genoux en haut.</div>
+            </div>
+            <div class="tech-card">
+                <div style="font-weight:700; color:#fff;">Soulevé de terre roumain</div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Genoux semi-fléchis fixes, pliage à la hanche. Focus ischios/fessiers.</div>
+            </div>
+            <div class="tech-card">
+                <div style="font-weight:700; color:#fff;">Marche du fermier (Finisher)</div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Épaules basses, gainage serré, pas courts. Recrute le grip sans choc genou.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NAVIGATION INFERIEURE -->
+    <nav>
+        <div class="nav-item active" onclick="switchView('dashboard', this)">
+            <div class="nav-icon">📊</div>
+            <div>Accueil</div>
+        </div>
+        <div class="nav-item" onclick="switchView('workout', this)">
+            <div class="nav-icon">🏋️‍♂️</div>
+            <div>Séance</div>
+        </div>
+        <div class="nav-item" onclick="switchView('rules', this)">
+            <div class="nav-icon">📋</div>
+            <div>Règles</div>
+        </div>
+        <div class="nav-item" onclick="switchView('guide', this)">
+            <div class="nav-icon">💡</div>
+            <div>Execution</div>
+        </div>
+    </nav>
 
     <script>
-        // Gestion des onglets
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById('tab-' + tabName).classList.add('active');
-            event.currentTarget.classList.add('active');
+        const programData = {
+            1: {
+                name: "JOUR 1 - Haut du corps (Push)",
+                exercises: [
+                    { name: "Développé couché barre", sets: 4, reps: "6-8", start: "40", variant: "Alterne: haltères, Smith machine", restSec: 120 },
+                    { name: "Développé militaire haltères", sets: 3, reps: "8-10", start: "14", variant: "Alterne: machine", restSec: 90 },
+                    { name: "Dips ou Pec Fly", sets: 3, reps: "10-12", start: "0", variant: "Alterne chaque semaine", restSec: 60 },
+                    { name: "Élévations latérales", sets: 3, reps: "12-15", start: "8", variant: "Alterne: poulie", restSec: 60 },
+                    { name: "Extension triceps poulie", sets: 3, reps: "12-15", start: "20", variant: "Alterne: haltère nuque", restSec: 60 }
+                ]
+            },
+            2: {
+                name: "JOUR 2 - Bas du corps (Hanche-dominant)",
+                exercises: [
+                    { name: "Soulevé de terre roumain", sets: 4, reps: "8-10", start: "50", variant: "Alterne: haltères", restSec: 120 },
+                    { name: "Presse à cuisses", sets: 3, reps: "10-12", start: "100", variant: "Pieds larges", restSec: 90 },
+                    { name: "Hip thrust", sets: 3, reps: "10-12", start: "40", variant: "Alterne: machine si dispo", restSec: 90 },
+                    { name: "Leg curl allongé", sets: 3, reps: "12-15", start: "25", variant: "Alterne: assis", restSec: 60 },
+                    { name: "Marche du fermier", sets: 3, reps: "30-40m", start: "24", variant: "Grip & Gainage", restSec: 60 },
+                    { name: "Mollets debout", sets: 4, reps: "15", start: "40", variant: "Alterne: presse", restSec: 60 }
+                ]
+            },
+            3: {
+                name: "JOUR 3 - Haut du corps (Pull)",
+                exercises: [
+                    { name: "Tractions / Tirage vertical", sets: 4, reps: "6-10", start: "20", variant: "Alterne prise large/serrée", restSec: 120 },
+                    { name: "Rowing barre ou machine", sets: 4, reps: "8-10", start: "40", variant: "Alterne: T-Bar", restSec: 90 },
+                    { name: "Tirage horizontal poulie", sets: 3, reps: "10-12", start: "35", variant: "Alterne poignée V/large", restSec: 90 },
+                    { name: "Curl biceps barre EZ", sets: 3, reps: "10-12", start: "20", variant: "Alterne: haltères", restSec: 60 },
+                    { name: "Face pull", sets: 3, reps: "15", start: "15", variant: "Poulie haute", restSec: 60 }
+                ]
+            },
+            4: {
+                name: "JOUR 4 - Bas du corps (Quadriceps)",
+                exercises: [
+                    { name: "Hack squat / Leg press bas", sets: 4, reps: "8-10", start: "50", variant: "Alterne les deux chaque semaine", restSec: 120 },
+                    { name: "Fentes courtes / Bulgares", sets: 3, reps: "10/jambe", start: "10", variant: "Alterne marchées/bulgares", restSec: 90 },
+                    { name: "Extension quadriceps", sets: 3, reps: "12-15", start: "30", variant: "Machine", restSec: 60 },
+                    { name: "Gainage + Obliques", sets: 4, reps: "Chrono/Reps", start: "0", variant: "Planche, rotations poulie", restSec: 60 }
+                ]
+            }
+        };
+
+        // GESTION DU STORAGE LOCAL
+        let userData = JSON.parse(localStorage.getItem('basicFitApp_red_data')) || {
+            completedSessions: 0,
+            currentCycleDay: 1,
+            history: [],
+            lastLogs: {} // Stockage par jour de cycle pour la pré-saisie
+        };
+
+        let timerInterval = null;
+        let remainingTime = 0;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            updateDashboardUI();
+        });
+
+        function saveStorage() {
+            localStorage.setItem('basicFitApp_red_data', JSON.stringify(userData));
         }
 
-        // Rajouter une serie dynamiquement
-        function addSet(containerId) {
-            const container = document.getElementById(containerId);
-            const setCount = container.querySelectorAll('.set-row').length + 1;
+        function switchView(viewId, element) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             
-            const newRow = document.createElement('div');
-            newRow.className = 'set-row';
-            newRow.innerHTML = `
-                <span class="set-label">Série ${setCount}</span>
-                <input type="text" placeholder="ex: 80kg x 8 ou 80kg x 4 + 70kg x 4" class="set-input">
-            `;
-            container.appendChild(newRow);
-        }
+            document.getElementById(`view-${viewId}`).classList.add('active');
+            if(element) element.classList.add('active');
 
-        // Simulation Detection Automatique de PR (basée sur charge max > 80kg)
-        function checkPR(exercise, value, bannerId) {
-            const match = value.match(/(\d+)\s*kg/i);
-            if (match) {
-                const weight = parseInt(match[1]);
-                // Seuil d'exemple pour declencher la banniere PR
-                if (weight > 80) {
-                    document.getElementById(bannerId).style.display = 'block';
-                }
+            const titles = {
+                'dashboard': 'Tableau de Bord',
+                'workout': 'Séance en cours',
+                'rules': 'Consignes & Règles',
+                'guide': 'Exécution Technique'
+            };
+            document.getElementById('header-title').innerText = titles[viewId];
+
+            if(viewId === 'workout' && document.getElementById('workout-exercises-container').children.length === 0) {
+                renderWorkoutForm(userData.currentCycleDay);
             }
         }
 
-        // Fin et validation de seance
-        function finishWorkout() {
-            const rpe = document.getElementById('rpe-global').value;
-            if(!rpe) {
-                alert("N'oublie pas de noter ton RPE global avant de valider !");
+        function updateDashboardUI() {
+            document.getElementById('session-count-badge').innerText = `Séance ${userData.completedSessions + 1} / 160`;
+            document.getElementById('total-sessions-text').innerHTML = `${userData.completedSessions} <span style="font-size:15px; font-weight:normal; color:var(--text-secondary);">/ 160 séances</span>`;
+            
+            const percentage = Math.min(100, (userData.completedSessions / 160) * 100);
+            document.getElementById('annual-progress').style.width = `${percentage}%`;
+
+            const dayData = programData[userData.currentCycleDay];
+            document.getElementById('next-session-title').innerText = dayData.name;
+
+            const historyContainer = document.getElementById('history-list');
+            historyContainer.innerHTML = '';
+            if(userData.history.length === 0) {
+                historyContainer.innerHTML = '<div style="color:var(--text-secondary); font-size:14px;">Aucune séance enregistrée.</div>';
+            } else {
+                userData.history.slice(-3).reverse().forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'info-item';
+                    div.innerHTML = `<span>${item.name}</span><strong style="color:var(--accent-color);">${item.date}</strong>`;
+                    historyContainer.appendChild(div);
+                });
+            }
+        }
+
+        function startSession() {
+            renderWorkoutForm(userData.currentCycleDay);
+            switchView('workout', document.querySelectorAll('.nav-item')[1]);
+        }
+
+        // CHRONOMÈTRE DE REPOS
+        function startTimer(seconds, buttonEl) {
+            clearInterval(timerInterval);
+            remainingTime = seconds;
+            
+            document.getElementById('active-timer-banner').style.display = 'flex';
+            updateTimerDisplay();
+
+            document.querySelectorAll('.btn-timer').forEach(btn => btn.classList.remove('running'));
+            if(buttonEl) buttonEl.classList.add('running');
+
+            timerInterval = setInterval(() => {
+                remainingTime--;
+                updateTimerDisplay();
+
+                if (remainingTime <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('active-timer-banner').style.display = 'none';
+                    if(buttonEl) buttonEl.classList.remove('running');
+                    
+                    if ("vibrate" in navigator) {
+                        navigator.vibrate([200, 100, 200]);
+                    }
+                    alert("⏱️ Temps de repos terminé ! À toi de jouer !");
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            document.getElementById('active-timer-banner').style.display = 'none';
+            document.querySelectorAll('.btn-timer').forEach(btn => btn.classList.remove('running'));
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(remainingTime / 60);
+            const secs = remainingTime % 60;
+            const formatted = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('banner-time-display').innerText = formatted;
+        }
+
+        // AFFICHAGE DE LA SÉANCE AVEC PRÉ-REMPLISSAGE AUTOMATIQUE
+        function renderWorkoutForm(dayNumber) {
+            const dayData = programData[dayNumber];
+            document.getElementById('workout-day-title').innerText = dayData.name;
+            
+            const container = document.getElementById('workout-exercises-container');
+            container.innerHTML = '';
+
+            const lastLogForDay = userData.lastLogs ? userData.lastLogs[dayNumber] : null;
+
+            dayData.exercises.forEach((ex, exIndex) => {
+                const exCard = document.createElement('div');
+                exCard.className = 'exercise-item';
+                
+                let setsHTML = '';
+                for(let s = 1; s <= ex.sets; s++) {
+                    let prefilledWeight = ex.start;
+                    let prefilledReps = "";
+
+                    // Si on a des données de la séance précédente pour ce jour et cet exercice
+                    if (lastLogForDay && lastLogForDay[exIndex] && lastLogForDay[exIndex][s]) {
+                        prefilledWeight = lastLogForDay[exIndex][s].weight || prefilledWeight;
+                        prefilledReps = lastLogForDay[exIndex][s].reps || "";
+                    }
+
+                    setsHTML += `
+                        <div class="set-row">
+                            <span class="set-label">S${s}</span>
+                            <input type="number" placeholder="kg" id="ex_${exIndex}_set_${s}_weight" value="${prefilledWeight}">
+                            <input type="number" placeholder="reps" id="ex_${exIndex}_set_${s}_reps" value="${prefilledReps}">
+                        </div>
+                    `;
+                }
+
+                const formatRest = ex.restSec >= 60 ? `${ex.restSec / 60}m` : `${ex.restSec}s`;
+
+                exCard.innerHTML = `
+                    <div class="exercise-header-row">
+                        <div class="exercise-title-group">
+                            <div class="exercise-name">${ex.name}</div>
+                            <div class="exercise-target">${ex.sets} x ${ex.reps}</div>
+                        </div>
+                        <button class="btn-timer" onclick="startTimer(${ex.restSec}, this)">
+                            ⏱️ Pause ${formatRest}
+                        </button>
+                    </div>
+                    <div class="exercise-variant">Départ: ${ex.start}kg | ${ex.variant}</div>
+                    ${setsHTML}
+                `;
+                container.appendChild(exCard);
+            });
+        }
+
+        function finishSession() {
+            stopTimer();
+            const currentDay = userData.currentCycleDay;
+            const currentDayData = programData[currentDay];
+            
+            // Sauvegarde des charges/reps saisies pour la prochaine séance de ce même jour
+            if (!userData.lastLogs) userData.lastLogs = {};
+            userData.lastLogs[currentDay] = {};
+
+            currentDayData.exercises.forEach((ex, exIndex) => {
+                userData.lastLogs[currentDay][exIndex] = {};
+                for (let s = 1; s <= ex.sets; s++) {
+                    const weightVal = document.getElementById(`ex_${exIndex}_set_${s}_weight`).value;
+                    const repsVal = document.getElementById(`ex_${exIndex}_set_${s}_reps`).value;
+                    userData.lastLogs[currentDay][exIndex][s] = {
+                        weight: weightVal,
+                        reps: repsVal
+                    };
+                }
+            });
+
+            const sessionRecord = {
+                day: currentDay,
+                name: currentDayData.name,
+                date: new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+            };
+
+            userData.completedSessions += 1;
+            userData.history.push(sessionRecord);
+            userData.currentCycleDay = (userData.currentCycleDay % 4) + 1;
+
+            saveStorage();
+            updateDashboardUI();
+            
+            alert('Séance validée et enregistrée !');
+            switchView('dashboard', document.querySelectorAll('.nav-item')[0]);
+        }
+
+        function cancelWorkout() {
+            if(confirm("Veux-tu abandonner la saisie de cette séance ?")) {
+                stopTimer();
+                switchView('dashboard', document.querySelectorAll('.nav-item')[0]);
+            }
+        }
+
+        function undoLastSession() {
+            if(userData.completedSessions === 0) {
+                alert("Aucune séance à annuler.");
                 return;
             }
-            alert(`Séance enregistrée avec succès ! RPE global : ${rpe}/10`);
+
+            if(confirm("Es-tu sûr de vouloir annuler la dernière séance enregistrée ?")) {
+                userData.completedSessions -= 1;
+                userData.history.pop();
+                
+                userData.currentCycleDay = userData.currentCycleDay - 1;
+                if(userData.currentCycleDay < 1) userData.currentCycleDay = 4;
+
+                saveStorage();
+                updateDashboardUI();
+                alert("Dernière séance annulée.");
+            }
+        }
+
+        function resetAllData() {
+            if (confirm("Attention ! Veux-tu vraiment réinitialiser TOUTE la progression et l'historique ?")) {
+                localStorage.removeItem('basicFitApp_red_data');
+                userData = {
+                    completedSessions: 0,
+                    currentCycleDay: 1,
+                    history: [],
+                    lastLogs: {}
+                };
+                saveStorage();
+                updateDashboardUI();
+                alert("Données réinitialisées.");
+            }
         }
     </script>
 </body>
