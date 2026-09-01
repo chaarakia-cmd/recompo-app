@@ -1,1286 +1,349 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#14161b">
-<title>Ton suivi · Basic Fit</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-:root{
-  --bg:#14161b;
-  --card:#1d2028;
-  --card-edge:#2b2f38;
-  --ink:#f1f0ec;
-  --ink-dim:#8b93a0;
-  --accent:#e5522f;
-  --accent-soft:rgba(229,82,47,.14);
-  --amber:#e2a23b;
-  --teal:#5aa89b;
-  --font-display:'Oswald',sans-serif;
-  --font-body:'Inter',sans-serif;
-}
-
-*{
-  box-sizing:border-box;
-}
-
-html,body{
-  margin:0;
-  min-height:100%;
-}
-
-body{
-  background:
-    radial-gradient(
-      1200px 500px at 50% -10%,
-      rgba(229,82,47,.10),
-      transparent 60%
-    ),
-    var(--bg);
-  color:var(--ink);
-  font-family:var(--font-body);
-  -webkit-font-smoothing:antialiased;
-}
-
-button,
-input,
-select{
-  font-family:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-#app{
-  max-width:460px;
-  margin:0 auto;
-  padding-bottom:90px;
-  min-height:100vh;
-}
-
-/* ================= HEADER ================= */
-
-header.top{
-  padding:24px 20px 4px;
-}
-
-header.top .eyebrow{
-  color:var(--accent);
-  font-family:var(--font-display);
-  font-weight:600;
-  font-size:11.5px;
-  letter-spacing:.06em;
-  margin:0 0 2px;
-}
-
-header.top h1{
-  font-family:var(--font-display);
-  font-weight:700;
-  font-size:24px;
-  margin:0;
-  line-height:1.08;
-}
-
-header.top .sub{
-  color:var(--ink-dim);
-  font-size:12px;
-  margin-top:4px;
-}
-
-/* ================= SECTIONS ================= */
-
-section{
-  display:none;
-  padding:2px 20px 8px;
-}
-
-section.active{
-  display:block;
-}
-
-/* ================= HOME ================= */
-
-.hero{
-  margin:14px 20px 16px;
-  background:linear-gradient(165deg,#21252d 0%,#1a1d24 100%);
-  border:1px solid var(--card-edge);
-  border-radius:16px;
-  padding:18px;
-  display:flex;
-  align-items:center;
-  gap:16px;
-}
-
-.ring-wrap{
-  position:relative;
-  width:96px;
-  height:96px;
-  flex:0 0 auto;
-}
-
-.ring-wrap svg{
-  transform:rotate(-90deg);
-}
-
-.ring-center{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-}
-
-.ring-center .n{
-  font-family:var(--font-display);
-  font-weight:700;
-  font-size:24px;
-}
-
-.ring-center .l{
-  font-size:9px;
-  color:var(--ink-dim);
-}
-
-.hero-info{
-  flex:1;
-  min-width:0;
-}
-
-.hero-info .milestone-label{
-  font-family:var(--font-display);
-  font-size:12px;
-  font-weight:600;
-  color:var(--accent);
-  margin-bottom:3px;
-}
-
-.hero-info .milestone-sub{
-  font-size:11px;
-  color:var(--ink-dim);
-  line-height:1.4;
-}
-
-.days-row{
-  display:flex;
-  margin:0 20px 14px;
-  gap:9px;
-}
-
-.days-box{
-  flex:1;
-  background:var(--card);
-  border:1px solid var(--card-edge);
-  border-radius:12px;
-  padding:11px 12px;
-}
-
-.days-box .n{
-  font-family:var(--font-display);
-  font-weight:700;
-  font-size:19px;
-}
-
-.days-box .l{
-  font-size:10px;
-  color:var(--ink-dim);
-  margin-top:1px;
-}
-
-/* ================= CARDS ================= */
-
-.card{
-  background:var(--card);
-  border:1px solid var(--card-edge);
-  border-radius:14px;
-  padding:16px;
-  margin-bottom:13px;
-}
-
-.card h2{
-  font-family:var(--font-display);
-  font-weight:600;
-  font-size:16px;
-  margin:0 0 4px;
-}
-
-.card h3{
-  font-family:var(--font-display);
-  font-weight:500;
-  font-size:13px;
-  margin:14px 0 7px;
-  color:var(--amber);
-}
-
-.card p{
-  margin:4px 0;
-  font-size:13px;
-  line-height:1.5;
-  color:var(--ink-dim);
-}
-
-.pill{
-  display:inline-block;
-  background:var(--accent-soft);
-  color:var(--accent);
-  font-size:11px;
-  font-weight:600;
-  padding:4px 10px;
-  border-radius:20px;
-  margin-bottom:9px;
-  font-family:var(--font-display);
-}
-
-/* ================= PROGRAMME ================= */
-
-.ex-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  padding:9px 0;
-  border-bottom:1px solid var(--card-edge);
-  font-size:13px;
-  gap:8px;
-}
-
-.ex-row:last-child{
-  border-bottom:none;
-}
-
-.ex-name{
-  font-weight:500;
-}
-
-.ex-meta{
-  color:var(--ink-dim);
-  font-size:11.5px;
-  text-align:right;
-  white-space:nowrap;
-}
-
-.ex-alt{
-  display:block;
-  font-size:10.5px;
-  color:var(--ink-dim);
-  font-style:italic;
-  margin-top:2px;
-}
-
-/* ================= FORM ================= */
-
-select,
-input{
-  width:100%;
-  background:#12141a;
-  border:1px solid var(--card-edge);
-  color:var(--ink);
-  padding:10px 12px;
-  border-radius:10px;
-  font-size:13.5px;
-  margin-bottom:9px;
-}
-
-select{
-  appearance:none;
-  background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b93a0' stroke-width='2'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
-  background-repeat:no-repeat;
-  background-position:right 12px center;
-  background-size:15px;
-}
-
-label{
-  font-size:11.5px;
-  color:var(--ink-dim);
-  display:block;
-  margin-bottom:5px;
-  font-weight:500;
-}
-
-/* ================= LOG ================= */
-
-.log-ex{
-  display:flex;
-  gap:7px;
-  align-items:center;
-  margin-bottom:8px;
-}
-
-.log-ex span{
-  flex:1;
-  font-size:12.5px;
-}
-
-.log-ex input{
-  width:65px;
-  margin-bottom:0;
-  text-align:center;
-  padding:8px 3px;
-}
-
-.timer-btn{
-  flex:0 0 auto;
-  width:34px;
-  height:34px;
-  border-radius:9px;
-  background:#12141a;
-  border:1px solid var(--card-edge);
-  color:var(--teal);
-  font-size:15px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-/* ================= BUTTONS ================= */
-
-button.primary{
-  width:100%;
-  background:var(--accent);
-  color:#fff;
-  border:none;
-  padding:13px;
-  border-radius:11px;
-  font-family:var(--font-display);
-  font-weight:600;
-  font-size:14.5px;
-  letter-spacing:.02em;
-  margin-top:5px;
-  box-shadow:0 6px 16px rgba(229,82,47,.25);
-}
-
-button.primary:active{
-  opacity:.88;
-}
-
-button.secondary{
-  width:100%;
-  background:#12141a;
-  color:var(--ink);
-  border:1px solid var(--card-edge);
-  padding:12px;
-  border-radius:11px;
-  font-family:var(--font-display);
-  font-weight:600;
-  font-size:13.5px;
-  margin-top:5px;
-}
-
-/* ================= HISTORY ================= */
-
-.hist-item{
-  display:flex;
-  justify-content:space-between;
-  font-size:12.5px;
-  padding:7px 0;
-  border-bottom:1px solid var(--card-edge);
-}
-
-.hist-item:last-child{
-  border-bottom:none;
-}
-
-.hist-date{
-  color:var(--ink-dim);
-}
-
-.trend-up{
-  color:var(--teal);
-  font-weight:600;
-}
-
-.trend-flat{
-  color:var(--ink-dim);
-}
-
-/* ================= NUTRITION ================= */
-
-.macro-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:9px;
-  margin-top:11px;
-}
-
-.macro-box{
-  background:#12141a;
-  border-radius:11px;
-  padding:11px 5px;
-  text-align:center;
-}
-
-.macro-box .n{
-  font-family:var(--font-display);
-  font-size:18px;
-  font-weight:600;
-  color:var(--teal);
-}
-
-.macro-box .l{
-  font-size:10px;
-  color:var(--ink-dim);
-  margin-top:1px;
-}
-
-/* ================= PROGRESS ================= */
-
-.subtabs{
-  display:flex;
-  gap:6px;
-  margin-bottom:13px;
-  overflow-x:auto;
-  scrollbar-width:none;
-}
-
-.subtabs::-webkit-scrollbar{
-  display:none;
-}
-
-.subtabs button{
-  flex:0 0 auto;
-  background:var(--card);
-  border:1px solid var(--card-edge);
-  color:var(--ink-dim);
-  font-family:var(--font-display);
-  font-size:11.5px;
-  font-weight:500;
-  padding:8px 13px;
-  border-radius:20px;
-}
-
-.subtabs button.active{
-  background:var(--accent);
-  color:#fff;
-  border-color:var(--accent);
-}
-
-.subpanel{
-  display:none;
-}
-
-.subpanel.active{
-  display:block;
-}
-
-/* ================= CALENDAR ================= */
-
-.week-row{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:7px 0;
-  border-bottom:1px solid var(--card-edge);
-}
-
-.week-row:last-child{
-  border-bottom:none;
-}
-
-.week-label{
-  width:78px;
-  font-size:11px;
-  color:var(--ink-dim);
-  flex:0 0 auto;
-}
-
-.week-dots{
-  display:flex;
-  gap:6px;
-}
-
-.dot{
-  width:20px;
-  height:20px;
-  border-radius:6px;
-  background:#12141a;
-  border:1px solid var(--card-edge);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:8.5px;
-  color:var(--ink-dim);
-}
-
-.dot.done{
-  background:var(--accent);
-  border-color:var(--accent);
-  color:#fff;
-}
-
-.dot.today{
-  box-shadow:0 0 0 2px var(--amber);
-}
-
-/* ================= BADGES ================= */
-
-.badge-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.badge{
-  background:#12141a;
-  border:1px solid var(--card-edge);
-  border-radius:12px;
-  padding:12px;
-  text-align:center;
-  opacity:.35;
-}
-
-.badge.unlocked{
-  opacity:1;
-  border-color:var(--amber);
-  background:rgba(226,162,59,.08);
-}
-
-.badge .ic{
-  font-size:22px;
-  margin-bottom:5px;
-}
-
-.badge .t{
-  font-family:var(--font-display);
-  font-size:11.5px;
-  font-weight:600;
-}
-
-.badge .d{
-  font-size:9.5px;
-  color:var(--ink-dim);
-  margin-top:2px;
-  line-height:1.3;
-}
-
-/* ================= RECORDS ================= */
-
-.pr-item{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
-  border-bottom:1px solid var(--card-edge);
-  font-size:12.5px;
-}
-
-.pr-item:last-child{
-  border-bottom:none;
-}
-
-.pr-w{
-  font-family:var(--font-display);
-  font-weight:600;
-  color:var(--amber);
-}
-
-/* ================= PHOTOS ================= */
-
-.photo-strip{
-  display:flex;
-  gap:9px;
-  overflow-x:auto;
-  padding-bottom:4px;
-}
-
-.photo-thumb{
-  flex:0 0 auto;
-  width:78px;
-  text-align:center;
-}
-
-.photo-thumb img{
-  width:78px;
-  height:104px;
-  object-fit:cover;
-  border-radius:10px;
-  border:1px solid var(--card-edge);
-}
-
-.photo-thumb .dl{
-  font-size:9.5px;
-  color:var(--ink-dim);
-  margin-top:4px;
-}
-
-.compare-row{
-  display:flex;
-  gap:10px;
-  margin-top:10px;
-}
-
-.compare-col{
-  flex:1;
-  text-align:center;
-}
-
-.compare-col img{
-  width:100%;
-  border-radius:12px;
-  border:1px solid var(--card-edge);
-}
-
-.compare-col small{
-  color:var(--ink-dim);
-  font-size:9px;
-}
-
-/* ================= EMPTY ================= */
-
-.empty{
-  color:var(--ink-dim);
-  font-size:12.5px;
-  font-style:italic;
-  padding:6px 0;
-}
-
-/* ================= NAV ================= */
-
-nav.tabbar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  max-width:460px;
-  margin:0 auto;
-  background:rgba(24,27,33,.94);
-  backdrop-filter:blur(10px);
-  border-top:1px solid var(--card-edge);
-  display:flex;
-  padding-bottom:env(safe-area-inset-bottom);
-  z-index:20;
-}
-
-nav.tabbar button{
-  flex:1;
-  background:none;
-  border:none;
-  color:var(--ink-dim);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:2px;
-  font-family:var(--font-display);
-  font-size:9.5px;
-  font-weight:500;
-  padding:10px 0 8px;
-}
-
-nav.tabbar button svg{
-  width:19px;
-  height:19px;
-  stroke:var(--ink-dim);
-}
-
-nav.tabbar button.active{
-  color:var(--accent);
-}
-
-nav.tabbar button.active svg{
-  stroke:var(--accent);
-}
-
-/* ================= TIMER ================= */
-
-#timerOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(10,11,14,.94);
-  backdrop-filter:blur(6px);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  z-index:50;
-}
-
-#timerOverlay.show{
-  display:flex;
-}
-
-#timerNum{
-  font-family:var(--font-display);
-  font-weight:700;
-  font-size:64px;
-  color:var(--accent);
-}
-
-#timerLabel{
-  color:var(--ink-dim);
-  font-size:13px;
-  margin-bottom:20px;
-  text-align:center;
-  max-width:300px;
-}
-
-.timer-controls{
-  display:flex;
-  gap:8px;
-  margin-top:22px;
-}
-
-.timer-controls button{
-  background:var(--card);
-  border:1px solid var(--card-edge);
-  color:var(--ink);
-  padding:11px 13px;
-  border-radius:12px;
-  font-family:var(--font-display);
-  font-weight:600;
-  font-size:12px;
-}
-
-.timer-controls button.stop{
-  background:var(--accent);
-  border-color:var(--accent);
-  color:#fff;
-}
-
-/* ================= TOAST ================= */
-
-.toast{
-  position:fixed;
-  top:18px;
-  left:50%;
-  transform:translateX(-50%);
-  background:var(--amber);
-  color:#1a1400;
-  padding:10px 18px;
-  border-radius:20px;
-  font-family:var(--font-display);
-  font-weight:600;
-  font-size:12.5px;
-  z-index:60;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .3s,top .3s;
-}
-
-.toast.show{
-  opacity:1;
-  top:30px;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:360px){
-  .hero{
-    gap:10px;
-    padding:14px;
+  :root{
+    --bg:#14161b; --card:#1d2028; --card-edge:#2b2f38;
+    --ink:#f1f0ec; --ink-dim:#8b93a0;
+    --accent:#e5522f; --accent-soft:rgba(229,82,47,.14);
+    --amber:#e2a23b; --teal:#5aa89b; --teal-soft:rgba(90,168,155,.15);
+    --font-display:'Oswald',sans-serif; --font-body:'Inter',sans-serif;
   }
-
-  .ring-wrap{
-    width:82px;
-    height:82px;
+  *{box-sizing:border-box;} html,body{margin:0;}
+  body{
+    background:radial-gradient(1200px 500px at 50% -10%, rgba(229,82,47,.10), transparent 60%), var(--bg);
+    color:var(--ink); font-family:var(--font-body); -webkit-font-smoothing:antialiased;
   }
+  #app{max-width:460px;margin:0 auto;padding-bottom:90px;min-height:100vh;}
+  header.top{padding:24px 20px 4px;}
+  header.top .eyebrow{color:var(--accent);font-family:var(--font-display);font-weight:600;font-size:11.5px;letter-spacing:.06em;margin:0 0 2px;}
+  header.top h1{font-family:var(--font-display);font-weight:700;font-size:24px;margin:0;line-height:1.08;}
+  header.top .sub{color:var(--ink-dim);font-size:12px;margin-top:4px;}
 
-  .ring-wrap svg{
-    width:82px;
-    height:82px;
-  }
+  .hero{margin:14px 20px 16px;background:linear-gradient(165deg,#21252d 0%,#1a1d24 100%);
+    border:1px solid var(--card-edge);border-radius:16px;padding:18px;display:flex;align-items:center;gap:16px;}
+  .ring-wrap{position:relative;width:96px;height:96px;flex:0 0 auto;}
+  .ring-wrap svg{transform:rotate(-90deg);}
+  .ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .ring-center .n{font-family:var(--font-display);font-weight:700;font-size:24px;}
+  .ring-center .l{font-size:9px;color:var(--ink-dim);}
+  .hero-info{flex:1;min-width:0;}
+  .hero-info .milestone-label{font-family:var(--font-display);font-size:12px;font-weight:600;color:var(--accent);margin-bottom:3px;}
+  .hero-info .milestone-sub{font-size:11px;color:var(--ink-dim);line-height:1.4;}
 
-  .week-label{
-    width:65px;
-  }
+  .days-row{display:flex;margin:0 20px 14px;gap:9px;}
+  .days-box{flex:1;background:var(--card);border:1px solid var(--card-edge);border-radius:12px;padding:11px 12px;}
+  .days-box .n{font-family:var(--font-display);font-weight:700;font-size:19px;}
+  .days-box .l{font-size:10px;color:var(--ink-dim);margin-top:1px;}
 
-  .dot{
-    width:18px;
-    height:18px;
-  }
-}
+  section{display:none;padding:2px 20px 8px;}
+  section.active{display:block;}
+  .card{background:var(--card);border:1px solid var(--card-edge);border-radius:14px;padding:16px;margin-bottom:13px;}
+  .card h2{font-family:var(--font-display);font-weight:600;font-size:16px;margin:0 0 4px;}
+  .card h3{font-family:var(--font-display);font-weight:500;font-size:13px;margin:14px 0 7px;color:var(--amber);}
+  .card p{margin:4px 0;font-size:13px;line-height:1.5;color:var(--ink-dim);}
+  .pill{display:inline-block;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:600;
+    padding:4px 10px;border-radius:20px;margin-bottom:9px;font-family:var(--font-display);}
+
+  .ex-row{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--card-edge);font-size:13px;gap:8px;}
+  .ex-row:last-child{border-bottom:none;}
+  .ex-name{font-weight:500;}
+  .ex-meta{color:var(--ink-dim);font-size:11.5px;text-align:right;white-space:nowrap;}
+  .ex-alt{display:block;font-size:10.5px;color:var(--ink-dim);font-style:italic;margin-top:2px;}
+
+  select, input{width:100%;background:#12141a;border:1px solid var(--card-edge);color:var(--ink);padding:10px 12px;
+    border-radius:10px;font-size:13.5px;font-family:var(--font-body);margin-bottom:9px;-webkit-appearance:none;appearance:none;}
+  select{background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b93a0' stroke-width='2'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat:no-repeat;background-position:right 12px center;background-size:15px;}
+  label{font-size:11.5px;color:var(--ink-dim);display:block;margin-bottom:5px;font-weight:500;}
+
+  /* Module de saisie multi-séries */
+  .log-ex-card{background:#12141a;border:1px solid var(--card-edge);border-radius:12px;padding:12px;margin-bottom:12px;}
+  .log-ex-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .log-ex-title{font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--ink);}
+  .log-ex-target{font-size:11px;color:var(--amber);}
+  .set-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;}
+  .set-num{font-size:11px;color:var(--ink-dim);width:20px;text-align:center;font-weight:600;}
+  .set-row input{margin-bottom:0;padding:7px 4px;text-align:center;font-size:13px;}
+  .timer-btn{flex:0 0 auto;width:32px;height:32px;border-radius:8px;background:var(--card);border:1px solid var(--card-edge);
+    color:var(--teal);font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+
+  button.primary{width:100%;background:var(--accent);color:#fff;border:none;padding:13px;border-radius:11px;
+    font-family:var(--font-display);font-weight:600;font-size:14.5px;letter-spacing:.02em;margin-top:5px;
+    box-shadow:0 6px 16px rgba(229,82,47,.25);cursor:pointer;}
+  button.primary:active{opacity:.88;}
+
+  .hist-item{font-size:12.5px;padding:9px 0;border-bottom:1px solid var(--card-edge);}
+  .hist-item:last-child{border-bottom:none;}
+  .hist-header{display:flex;justify-content:space-between;margin-bottom:4px;}
+  .hist-date{color:var(--ink-dim);font-size:11px;}
+  .hist-details{display:flex;flex-wrap:wrap;gap:6px;}
+  .hist-chip{background:#12141a;border:1px solid var(--card-edge);padding:3px 7px;border-radius:6px;font-size:11px;}
+  .trend-up{color:var(--teal);font-weight:600;}
+
+  .macro-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:11px;}
+  .macro-box{background:#12141a;border-radius:11px;padding:11px 5px;text-align:center;}
+  .macro-box .n{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--teal);}
+  .macro-box .l{font-size:10px;color:var(--ink-dim);margin-top:1px;}
+
+  nav.tabbar{position:fixed;bottom:0;left:0;right:0;max-width:460px;margin:0 auto;
+    background:rgba(24,27,33,.94);backdrop-filter:blur(10px);border-top:1px solid var(--card-edge);
+    display:flex;padding-bottom:env(safe-area-inset-bottom);}
+  nav.tabbar button{flex:1;background:none;border:none;color:var(--ink-dim);display:flex;flex-direction:column;
+    align-items:center;gap:2px;font-family:var(--font-display);font-size:9.5px;font-weight:500;padding:10px 0 8px;cursor:pointer;}
+  nav.tabbar button svg{width:19px;height:19px;stroke:var(--ink-dim);}
+  nav.tabbar button.active{color:var(--accent);}
+  nav.tabbar button.active svg{stroke:var(--accent);}
+
+  .empty{color:var(--ink-dim);font-size:12.5px;font-style:italic;padding:6px 0;}
+
+  /* Sous-onglets Progrès */
+  .subtabs{display:flex;gap:6px;margin-bottom:13px;overflow-x:auto;}
+  .subtabs button{flex:0 0 auto;background:var(--card);border:1px solid var(--card-edge);color:var(--ink-dim);
+    font-family:var(--font-display);font-size:11.5px;font-weight:500;padding:8px 13px;border-radius:20px;cursor:pointer;}
+  .subtabs button.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .subpanel{display:none;} .subpanel.active{display:block;}
+
+  /* Heatmap streak */
+  .week-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--card-edge);}
+  .week-row:last-child{border-bottom:none;}
+  .week-label{width:78px;font-size:11px;color:var(--ink-dim);flex:0 0 auto;}
+  .week-dots{display:flex;gap:6px;}
+  .dot{width:20px;height:20px;border-radius:6px;background:#12141a;border:1px solid var(--card-edge);
+    display:flex;align-items:center;justify-content:center;font-size:8.5px;color:var(--ink-dim);}
+  .dot.done{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .dot.missed{border-color:#5a3530;color:#a15040;}
+  .dot.today{box-shadow:0 0 0 2px var(--amber);}
+
+  /* Badges */
+  .badge-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .badge{background:#12141a;border:1px solid var(--card-edge);border-radius:12px;padding:12px;text-align:center;opacity:.35;}
+  .badge.unlocked{opacity:1;border-color:var(--amber);background:rgba(226,162,59,.08);}
+  .badge .ic{font-size:22px;margin-bottom:5px;}
+  .badge .t{font-family:var(--font-display);font-size:11.5px;font-weight:600;}
+  .badge .d{font-size:9.5px;color:var(--ink-dim);margin-top:2px;line-height:1.3;}
+
+  /* PR list */
+  .pr-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--card-edge);font-size:12.5px;}
+  .pr-item:last-child{border-bottom:none;}
+  .pr-w{font-family:var(--font-display);font-weight:600;color:var(--amber);}
+
+  /* Photos */
+  .photo-strip{display:flex;gap:9px;overflow-x:auto;padding-bottom:4px;}
+  .photo-thumb{flex:0 0 auto;width:78px;text-align:center;}
+  .photo-thumb img{width:78px;height:104px;object-fit:cover;border-radius:10px;border:1px solid var(--card-edge);}
+  .photo-thumb .dl{font-size:9.5px;color:var(--ink-dim);margin-top:4px;}
+  .compare-row{display:flex;gap:10px;margin-top:10px;}
+  .compare-col{flex:1;text-align:center;}
+  .compare-col img{width:100%;border-radius:12px;border:1px solid var(--card-edge);}
+
+  /* Timer overlay */
+  #timerOverlay{position:fixed;inset:0;background:rgba(10,11,14,.92);backdrop-filter:blur(6px);
+    display:none;align-items:center;justify-content:center;flex-direction:column;z-index:50;}
+  #timerOverlay.show{display:flex;}
+  #timerNum{font-family:var(--font-display);font-weight:700;font-size:64px;color:var(--accent);}
+  #timerLabel{color:var(--ink-dim);font-size:13px;margin-bottom:20px;}
+  .timer-controls{display:flex;gap:12px;margin-top:22px;}
+  .timer-controls button{background:var(--card);border:1px solid var(--card-edge);color:var(--ink);
+    padding:11px 18px;border-radius:12px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;}
+  .timer-controls button.stop{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+  .toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:var(--amber);color:#1a1400;
+    padding:10px 18px;border-radius:20px;font-family:var(--font-display);font-weight:600;font-size:12.5px;
+    z-index:60;opacity:0;transition:opacity .3s, top .3s;}
+  .toast.show{opacity:1;top:30px;}
 </style>
-</head>
-
-<body>
 
 <div id="app">
+  <header class="top">
+    <p class="eyebrow">RECOMPOSITION · BASIC FIT</p>
+    <h1>Ton suivi</h1>
+    <p class="sub" id="dateNow">—</p>
+  </header>
 
-<header class="top">
-  <p class="eyebrow">RECOMPOSITION · BASIC FIT</p>
-  <h1>Ton suivi</h1>
-  <p class="sub" id="dateNow">—</p>
-</header>
-
-
-<!-- ================= ACCUEIL ================= -->
-
-<section id="tab-home" class="active">
-
-  <div class="hero">
-
-    <div class="ring-wrap">
-
-      <svg width="96" height="96" viewBox="0 0 104 104">
-
-        <circle
-          cx="52"
-          cy="52"
-          r="45"
-          fill="none"
-          stroke="#2b2f38"
-          stroke-width="9"
-        />
-
-        <circle
-          id="ringProgress"
-          cx="52"
-          cy="52"
-          r="45"
-          fill="none"
-          stroke="#e5522f"
-          stroke-width="9"
-          stroke-linecap="round"
-          stroke-dasharray="283"
-          stroke-dashoffset="283"
-        />
-
-      </svg>
-
-      <div class="ring-center">
-        <div class="n" id="sessionCount">0</div>
-        <div class="l">séances</div>
+  <!-- ACCUEIL -->
+  <section id="tab-home" class="active">
+    <div class="hero">
+      <div class="ring-wrap">
+        <svg width="96" height="96" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="45" fill="none" stroke="#2b2f38" stroke-width="9"/>
+          <circle id="ringProgress" cx="52" cy="52" r="45" fill="none" stroke="#e5522f" stroke-width="9"
+                  stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283"/>
+        </svg>
+        <div class="ring-center"><div class="n" id="sessionCount">0</div><div class="l">séances</div></div>
       </div>
-
-    </div>
-
-    <div class="hero-info">
-
-      <div
-        class="milestone-label"
-        id="milestoneLabel">
-        —
+      <div class="hero-info">
+        <div class="milestone-label" id="milestoneLabel">—</div>
+        <div class="milestone-sub" id="milestoneSub">—</div>
       </div>
-
-      <div
-        class="milestone-sub"
-        id="milestoneSub">
-        —
-      </div>
-
     </div>
-
-  </div>
-
-
-  <div class="days-row">
-
-    <div class="days-box">
-      <div class="n" id="weekNum">S1</div>
-      <div class="l" id="weekDates">—</div>
+    <div class="days-row">
+      <div class="days-box"><div class="n" id="weekNum">S1</div><div class="l" id="weekDates">—</div></div>
+      <div class="days-box"><div class="n" id="phaseShort">—</div><div class="l">phase actuelle</div></div>
     </div>
-
-    <div class="days-box">
-      <div class="n" id="phaseShort">—</div>
-      <div class="l">phase actuelle</div>
-    </div>
-
-  </div>
-
-
-  <div class="card">
-
-    <span class="pill" id="phasePill">—</span>
-
-    <p id="phaseNote"></p>
-
-  </div>
-
-
-  <div class="card">
-
-    <h2>Séance du jour</h2>
-
-    <p id="todaySession">—</p>
-
-    <button
-      class="primary"
-      onclick="goLog()">
-      Logger cette séance
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- ================= PROGRAMME ================= -->
-
-<section id="tab-program">
-
-  <div class="card">
-
-    <h2>Split — 4 séances/semaine</h2>
-
-    <p>
-      Chaque groupe est travaillé régulièrement.
-      Alterne les variantes indiquées une semaine sur deux.
-    </p>
-
-  </div>
-
-  <div id="programDays"></div>
-
-</section>
-
-
-<!-- ================= SUIVI ================= -->
-
-<section id="tab-log">
-
-  <div class="card">
-
-    <h2>Logger une séance</h2>
-
-    <label>Jour</label>
-
-    <select
-      id="logDaySelect"
-      onchange="renderLogForm()">
-    </select>
-
-    <div id="logForm"></div>
-
-    <button
-      class="primary"
-      onclick="saveLog()">
-      Enregistrer la séance
-    </button>
-
-  </div>
-
-
-  <div class="card">
-
-    <h2>Historique par exercice</h2>
-
-    <label>Exercice</label>
-
-    <select
-      id="histExSelect"
-      onchange="renderHistory()">
-    </select>
-
-    <div id="histList"></div>
-
-  </div>
-
-</section>
-
-
-<!-- ================= PROGRES ================= -->
-
-<section id="tab-progress">
-
-  <div class="subtabs">
-
-    <button
-      class="active"
-      data-sub="calendar"
-      onclick="switchSub('calendar')">
-      Calendrier
-    </button>
-
-    <button
-      data-sub="badges"
-      onclick="switchSub('badges')">
-      Badges
-    </button>
-
-    <button
-      data-sub="pr"
-      onclick="switchSub('pr')">
-      Records
-    </button>
-
-    <button
-      data-sub="photos"
-      onclick="switchSub('photos')">
-      Photos
-    </button>
-
-  </div>
-
-
-  <!-- CALENDRIER -->
-
-  <div
-    class="subpanel active"
-    id="sub-calendar">
-
     <div class="card">
-
-      <h2>Série en cours</h2>
-
-      <p id="streakText">—</p>
-
+      <span class="pill" id="phasePill">—</span>
+      <p id="phaseNote"></p>
     </div>
-
-
     <div class="card">
-
-      <h2>Semaine par semaine</h2>
-
-      <p style="margin-bottom:8px">
-        J1 · J2 · J3 · J4
-      </p>
-
-      <div id="weekGrid"></div>
-
+      <h2>Séance du jour</h2>
+      <p id="todaySession">—</p>
+      <button class="primary" onclick="goLog()">Logger cette séance</button>
     </div>
+  </section>
 
-  </div>
+  <!-- PROGRAMME -->
+  <section id="tab-program">
+    <div class="card"><h2>Split — 4 séances/semaine</h2>
+      <p>Chaque groupe travaillé 2x/semaine. Alterne les variantes indiquées une semaine sur deux.</p></div>
+    <div id="programDays"></div>
+  </section>
 
-
-  <!-- BADGES -->
-
-  <div
-    class="subpanel"
-    id="sub-badges">
-
+  <!-- SUIVI -->
+  <section id="tab-log">
     <div class="card">
-
-      <h2>Succès</h2>
-
-      <div
-        class="badge-grid"
-        id="badgeGrid">
-      </div>
-
+      <h2>Logger une séance</h2>
+      <label>Jour</label>
+      <select id="logDaySelect" onchange="renderLogForm()"></select>
+      <div id="logForm"></div>
+      <button class="primary" onclick="saveLog()">Enregistrer la séance</button>
     </div>
-
-  </div>
-
-
-  <!-- RECORDS -->
-
-  <div
-    class="subpanel"
-    id="sub-pr">
-
     <div class="card">
+      <h2>Historique par exercice</h2>
+      <label>Exercice</label>
+      <select id="histExSelect" onchange="renderHistory()"></select>
+      <div id="histList"></div>
+    </div>
+  </section>
 
-      <h2>Records personnels</h2>
-
-      <div id="prList"></div>
-
+  <!-- PROGRES -->
+  <section id="tab-progress">
+    <div class="subtabs">
+      <button class="active" data-sub="calendar" onclick="switchSub('calendar')">Calendrier</button>
+      <button data-sub="badges" onclick="switchSub('badges')">Badges</button>
+      <button data-sub="pr" onclick="switchSub('pr')">Records</button>
+      <button data-sub="photos" onclick="switchSub('photos')">Photos</button>
     </div>
 
-  </div>
+    <div class="subpanel active" id="sub-calendar">
+      <div class="card">
+        <h2>Série en cours</h2>
+        <p id="streakText">—</p>
+      </div>
+      <div class="card"><h2>Semaine par semaine</h2>
+        <p style="margin-bottom:8px">J1 · J2 · J3 · J4</p>
+        <div id="weekGrid"></div>
+      </div>
+    </div>
 
+    <div class="subpanel" id="sub-badges">
+      <div class="card">
+        <h2>Succès</h2>
+        <div class="badge-grid" id="badgeGrid"></div>
+      </div>
+    </div>
 
-  <!-- PHOTOS -->
+    <div class="subpanel" id="sub-pr">
+      <div class="card">
+        <h2>Records personnels</h2>
+        <div id="prList"></div>
+      </div>
+    </div>
 
-  <div
-    class="subpanel"
-    id="sub-photos">
+    <div class="subpanel" id="sub-photos">
+      <div class="card">
+        <h2>Ajouter une photo</h2>
+        <input type="file" accept="image/*" id="photoInput" onchange="addPhoto(event)">
+        <p>Stockées seulement pour toi, jamais partagées.</p>
+      </div>
+      <div class="card">
+        <h2>Chronologie</h2>
+        <div class="photo-strip" id="photoStrip"></div>
+      </div>
+      <div class="card">
+        <h2>Comparer avant / après</h2>
+        <label>Photo A</label>
+        <select id="photoASelect" onchange="renderCompare()"></select>
+        <label>Photo B</label>
+        <select id="photoBSelect" onchange="renderCompare()"></select>
+        <div class="compare-row" id="compareRow"></div>
+      </div>
+    </div>
+  </section>
 
+  <!-- NUTRITION -->
+  <section id="tab-nutrition">
     <div class="card">
-
-      <h2>Ajouter une photo</h2>
-
-      <input
-        type="file"
-        accept="image/*"
-        id="photoInput"
-        onchange="addPhoto(event)">
-
-      <p>
-        Les photos restent dans le stockage local
-        de ton navigateur.
-      </p>
-
+      <h2>Cibles journalières</h2>
+      <div class="macro-grid">
+        <div class="macro-box"><div class="n">2700</div><div class="l">kcal</div></div>
+        <div class="macro-box"><div class="n">180g</div><div class="l">protéines</div></div>
+        <div class="macro-box"><div class="n">80g</div><div class="l">lipides</div></div>
+      </div>
+      <p style="margin-top:10px">≈310g de glucides pour compléter.</p>
     </div>
-
-
     <div class="card">
-
-      <h2>Chronologie</h2>
-
-      <div
-        class="photo-strip"
-        id="photoStrip">
-      </div>
-
+      <h2>Structure de la journée</h2>
+      <h3>Matin</h3><p>Rien — bien s'hydrater dès le réveil.</p>
+      <h3>Midi (supermarché)</h3><p>Repas clé, viser 40g+ de protéines : poulet/dinde cuit, œufs durs, skyr, jambon blanc + pain, plats préparés riches en protéines.</p>
+      <h3>Goûter (si faim)</h3><p>Yaourt protéiné, barre protéinée, fruit.</p>
+      <h3>Soir (repas maison)</h3><p>Priorité à la partie protéines de l'assiette.</p>
+      <h3>Weekend</h3><p>Le goûter sucré reste permis.</p>
     </div>
+  </section>
 
+  <nav class="tabbar">
+    <button data-tab="home" onclick="switchTab('home')" class="active">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Accueil</button>
+    <button data-tab="program" onclick="switchTab('program')">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5v14M18 5v14M2 9h4M2 15h4M18 9h4M18 15h4M6 12h12"/></svg>Programme</button>
+    <button data-tab="log" onclick="switchTab('log')">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M8 17V10M13 17V6M18 17v-4"/></svg>Suivi</button>
+    <button data-tab="progress" onclick="switchTab('progress')">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.5L22 9.3l-5 4.9L18.2 22 12 18.3 5.8 22 7 14.2l-5-4.9 7.1-.8z"/></svg>Progrès</button>
+    <button data-tab="nutrition" onclick="switchTab('nutrition')">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M8 4a4 4 0 108 0M6 8c-2 2-3 5-3 8a7 7 0 0014 0c0-3-1-6-3-8"/></svg>Nutrition</button>
+  </nav>
+</div>
 
-    <div class="card">
-
-      <h2>Comparer avant / après</h2>
-
-      <label>Photo A</label>
-
-      <select
-        id="photoASelect"
-        onchange="renderCompare()">
-      </select>
-
-      <label>Photo B</label>
-
-      <select
-        id="photoBSelect"
-        onchange="renderCompare()">
-      </select>
-
-      <div
-        class="compare-row"
-        id="compareRow">
-      </div>
-
-    </div>
-
+<div id="timerOverlay">
+  <div id="timerLabel">Repos</div>
+  <div id="timerNum">90</div>
+  <div class="timer-controls">
+    <button onclick="adjustTimer(-15)">-15s</button>
+    <button onclick="adjustTimer(15)">+15s</button>
+    <button class="stop" onclick="closeTimer()">Terminer</button>
   </div>
+</div>
+<div class="toast" id="toast"></div>
 
-</section>
+<script>
+const START_DATE = new Date('2026-09-14T00:00:00');
+const END_DATE = new Date('2027-07-05T00:00:00');
+const MILESTONES = [{n:82,label:"Plancher critique"},{n:123,label:"Minimum réaliste"},{n:160,label:"Objectif optimal"}];
 
-
-<!-- ================= NUTRITION ================= -->
-
-<section id="tab-nutrition">
-
-  <div class="card">
-
-    <h2>Cibles journalières</h2>
-
-    <div class="macro-grid">
-
-      <div class="macro-box">
-        <div class="n">2700</div>
-        <div class="l">kcal</div>
-      </div>
-
-      <div class="macro-box">
-        <div class="n">180g</div>
-        <div class="l">protéines</div>
-      </div>
-
-      <div class="macro-box">
-        <div class="n">80g</div>
-        <div class="l">lipides</div>
-      </div>
-
-    </div>
-
-    <p style="margin-top:10px">
-      ≈310g de glucides pour compléter.
-    </p>
-
-  </div>
-
-
-  <div class="card">
-
-    <h2>Structure de la journée</h2>
-
-    <h3>Matin</h3>
-    <p>
-      Rien — bien t'hydrater dès le réveil.
-    </p>
-
-    <h3>Midi · supermarché</h3>
-    <p>
-      Repas clé, viser 40g+ de protéines :
-      poulet/dinde cuits, œufs durs, skyr,
-      jambon blanc + pain ou plats préparés
-      riches en protéines.
-    </p>
-
-    <h3>Goûter · si faim</h3>
-    <p>
-      Yaourt protéiné, barre protéinée, fruit.
-    </p>
-
-    <h3>Soir · repas maison</h3>
-    <p>
-      Priorité à la partie protéines de l'assiette.
-    </p>
-
-    <h3>Weekend</h3>
-    <p>
-      Le goûter sucré reste permis.
-    </p>
-
-  </div>
-
-</section>
-
-
-<!-- ================= NAVIGATION ================= -->
-
-<nav class="tabbar">
-
-  <button
-    data-tab="home"
-    onclick="switchTab('home')"
-    class="active">
-
-    <svg
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round">
-
-      <path d="M3 11l9-8 9 8M5 10v10h14V10"/>
-
-    </svg>
-
-    Accueil
-
-  </button>
-
-
-  <button
-    data-tab="program"
-    onclick="switchTab('program')">
-
-    <svg
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round">
-
-      <path d="M6 5v14M18 5v14M2 9h4M2 15h4M18 9h4M18 15h4M6 12h12"/>
-
-    </svg>
-
-    Programme
-
-  </button>
-
-
-  <button
-    data-tab="log"
-    onclick="switchTab('log')">
-
-    <svg
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round">
-
-      <path d="M3 3v18h18M8 17V10M13 17V6M18 17v-4"/>
-
-    </svg>
-
-    Suivi
-
-  </button>
-
-
-  <button
-    data-tab="progress"
-    onclick="switchTab('progress')">
-
-    <svg
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round">
-
-      <pa
+const PROGRAM = {
+  "Jour 1 — Push": [
+    {id:"developpe-couche", name:"Développé couché barre", setsCount:4, sets:"4x6-8", alt:"Alterne : haltères, Smith machine", start:"40kg", rest:100},
+    {id:"developpe-militaire", name:"Développé militaire haltères", setsCount:3, sets:"3x8-10", alt:"Alterne : machine", start:"2x14kg", rest:90},
+    {id:"dips-pecfly", name:"Dips ou pec fly", setsCount:3, sets:"3x10-12", alt:"Alterne les deux chaque semaine", start:"Poids du corps / mi-pile", rest:75},
+    {id:"elevations-lat", name:"Élévations latérales", setsCount:3, sets:"3x12-15", alt:"Alterne : poulie", start:"2x8kg", rest:50},
+    {id:"ext-triceps", name:"Extension triceps poulie", setsCount:3, sets:"3x12-15", alt:"Alterne : haltère nuque", start:"20-25kg", rest:50}
+  ],
+  "Jour 2 — Bas (hanche)": [
+    {id:"sdt-roumain", name:"Soulevé de terre roumain", setsCount:4, sets:"4x8-10", alt:"Alterne : haltères", start:"50kg", rest:110},
+    {id:"presse-cuisses", name:"Presse à cuisses", setsCount:3, sets:"3x10-12", alt:"", start:"≈100kg", rest:90},
+    {id:"hip-thrust", name:"Hip thrust", setsCount:3, sets:"3x10-12", alt:"Alterne : machine si dispo", start:"40kg", rest:90},
+    {id:"leg-curl", name:"Leg curl allongé", setsCount:3, sets:"3x12-15", alt:"Alterne : assis", start:"25-30kg", rest:50},
+    {id:"marche-fermier", name:"Marche du fermier", setsCount:3, sets:"3x30-40m", alt:"Grip + gainage + chaîne postérieure", start:"2x24-32kg", rest:75},
+    {id:"mollets-debout", name:"Mollets debout", setsCount:4, sets:"4x15", alt:"Alterne : presse", start:"40kg", rest:45}
+  ],
+  "Jour 3 — Pull": [
+    {id:"tractions", name:"Tractions / tirage vertical", setsCount:4, sets:"4x6-10", alt:"Alterne prise large/serrée", start:"Assistance -20kg", rest:100},
+    {id:"rowing", name:"Rowing barre ou machine", setsCount:4, sets:"4x8-10", alt:"Alterne : T-bar", start:"40-50kg", rest:90},
+    {id:"tirage-horizontal", name:"Tirage horizontal poulie", setsCount:3, sets:"3x10-12", alt:"Alterne poignée V/large", start:"35-40kg", rest:60},
+    {id:"curl-biceps", name:"Curl biceps barre EZ", setsCount:3, sets:"3x10-12", alt:"Alterne : haltères, machine", start:"20kg", rest:50},
+    {id:"face-pull", name:"Face pull", setsCount:3, sets:"3x15", alt:"", start:"15-20kg", rest:45}
+  ],
+  "Jour 4 — Bas (quadriceps)": [
+    {id:"hack-squat", name:"Hack squat / leg press pieds bas", setsCount:4, sets:"4x8-10", alt:"Alterne les deux chaque semaine", start:"40-60kg", rest:100},
+    {id:"fentes", name
